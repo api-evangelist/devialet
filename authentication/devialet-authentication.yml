@@ -1,0 +1,65 @@
+generated: '2026-08-04'
+method: searched
+source: https://help.devialet.com/hc/en-us/articles/4415207423378-Phantom-s-documentation-for-piloting-them-via-IP
+docs: https://help.devialet.com/hc/en-us/articles/4415207423378-Phantom-s-documentation-for-piloting-them-via-IP
+source_document: >-
+  Devialet IP Control — REFERENCE API DOCUMENTATION, Revision 1, December 2021
+  (openapi/_original/devialet-ip-control-r1.pdf), section "Protocol and authentication methods"
+summary:
+  types: [none]
+  api_key_in: []
+  oauth2_flows: []
+  transport_security: none
+  posture: unauthenticated-local-network
+schemes: []
+statement:
+  quote: 'IP Control uses HTTP protocol. No authentication is required.'
+  source: openapi/_original/devialet-ip-control-r1.pdf
+  page: 6
+model:
+  authentication: none
+  authorization: none
+  transport: http
+  tls: false
+  port: 80
+  scope_of_trust: >-
+    Any client that can reach the device on the local network can read state and issue every
+    documented command, including powerOff, restart, and resetToFactorySettings. There is no
+    credential, token, pairing step, or per-client authorization in IP Control v1.
+  network_boundary: >-
+    The API is served by the device itself and is only reachable on the LAN. Devialet does not
+    operate a cloud endpoint for it, so exposure is bounded by the local network segment rather
+    than by an access control in the API.
+discovery:
+  mechanism: mDNS / DNS-SD
+  service_type: _http._tcp
+  txt_filter:
+    manufacturer: Devialet
+    ipControlVersion: '1'
+    path: /ipcontrol/v1
+  port: 80
+  note: >-
+    Clients are told to filter service instances on the TXT record key/value pairs
+    manufacturer=Devialet and ipControlVersion=1, and to use the advertised path value rather
+    than hard-coding /ipcontrol/v1.
+integrator_notes:
+  - >-
+    Because there is no authentication, the practical control is network segmentation. Devialet's
+    Phantom Reactor Custom technical guide recommends a fixed-IP configuration on the integrator
+    network and documents that setup and all internal status monitoring happen over this API.
+  - >-
+    Destructive operations (resetDeviceToFactorySettings, resetSystemToFactorySettings) erase
+    network credentials and, on a Wi-Fi-only deployment, make the device unreachable. They are
+    reachable by any unauthenticated LAN client.
+x-evidence:
+  fetched: '2026-08-04'
+  documentation_url: https://help.devialet.com/hc/en-us/articles/4415207423378-Phantom-s-documentation-for-piloting-them-via-IP
+  documentation_http_status: 403
+  documentation_note: >-
+    The live Help Center article is behind a Cloudflare bot challenge for non-browser clients
+    (HTTP 403). The article and its PDF attachment were retrieved from the Internet Archive
+    snapshot of Devialet's own page.
+  attachment_url: https://help.devialet.com/hc/en-us/article_attachments/4415236063506
+  archived_attachment_url: https://web.archive.org/web/20250712105922if_/https://help.devialet.com/hc/en-us/article_attachments/4415236063506
+  archived_attachment_http_status: 200
+  content_type: application/pdf

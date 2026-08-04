@@ -1,0 +1,71 @@
+generated: '2026-08-04'
+method: searched
+source: 'npm registry, PyPI, GitHub search, github.com/devialet'
+official_sdk_count: 0
+summary: >-
+  Devialet publishes no first-party client library for the IP Control API in any package registry.
+  The GitHub organization github.com/devialet is real and active but contains only forks of
+  third-party dependencies (protobuf, googletest, CMake, llvm/clang, tensorflow, curl, nghttp2,
+  firebase-ios-sdk, SDWebImage, vsomeip, tinyalsa and similar) vendored for firmware and app
+  builds — no SDK, no CLI, and no IP Control client. Every package below is a community
+  implementation, listed for completeness and explicitly marked official: false.
+packages: []
+community_packages:
+  - language: python
+    registry: pypi
+    name: devialet
+    version_seen: 1.5.7
+    url: https://pypi.org/project/devialet/
+    install: pip install devialet
+    source: https://github.com/fwestenberg/devialet
+    author: fwestenberg
+    official: false
+    note: >-
+      Async Python client for the IP Control API. Used by the Devialet integration in Home
+      Assistant. Registry probe returned HTTP 200 on 2026-08-04.
+  - language: javascript
+    registry: npm
+    name: devialet-phantom
+    url: https://www.npmjs.com/package/devialet-phantom
+    install: npm install devialet-phantom
+    official: false
+    note: >-
+      Community Node client that auto-discovers Phantom speakers on the local network. Registry
+      probe returned HTTP 200 on 2026-08-04.
+community_projects:
+  - name: VanVan/phantom-remote-control
+    url: https://github.com/VanVan/phantom-remote-control
+    official: false
+    note: HTTP remote-control server for Phantom speakers.
+  - name: RoonLabs/roon-extension-devialet-phantom-volume
+    url: https://github.com/RoonLabs/roon-extension-devialet-phantom-volume
+    official: false
+    note: Roon extension controlling Phantom volume. Published by Roon Labs, not Devialet.
+  - name: nicoaugereau/homebridge-devialet
+    url: https://github.com/nicoaugereau/homebridge-devialet
+    official: false
+  - name: jeyremy/homebridge-devialet-bridge
+    url: https://github.com/jeyremy/homebridge-devialet-bridge
+    official: false
+  - name: andrewmgrossman/devialet_expert_remote
+    url: https://github.com/andrewmgrossman/devialet_expert_remote
+    official: false
+    note: >-
+      Targets the older Expert Pro amplifier protocol, which is a different surface from the
+      DOS 2.14+ IP Control API documented here.
+first_party_integrations:
+  description: >-
+    Devialet's own distribution route for integrators is certified home-automation drivers rather
+    than SDK packages.
+  drivers: [Crestron, Control4]
+  source: openapi/_original/devialet-phantom-reactor-custom-ci-techguide.pdf
+registries_probed:
+  - {registry: npm, package: devialet, status: 404}
+  - {registry: npm, package: devialet-phantom, status: 200, official: false}
+  - {registry: npm, package: node-devialet, status: 404}
+  - {registry: pypi, package: devialet, status: 200, official: false}
+  - {registry: pypi, package: python-devialet, status: 404}
+  - {registry: github, org: devialet, status: 200, repos: 25, first_party_sdk: false}
+x-evidence:
+  fetched: '2026-08-04'
+  github_org_api: https://api.github.com/orgs/devialet/repos

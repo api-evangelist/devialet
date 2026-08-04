@@ -1,0 +1,93 @@
+generated: '2026-08-04'
+method: generated
+source: openapi/devialet-ip-control-openapi.yml
+grounded_in: openapi/_original/devialet-ip-control-r1.pdf
+note: >-
+  Devialet publishes no AGENTS.md or provider-authored skill files — the Help Center, the GitHub
+  organization, npm, and PyPI were all searched. These are API Evangelist skills generated from
+  Devialet's own reference documentation. Every operationId referenced below exists verbatim in
+  openapi/devialet-ip-control-openapi.yml.
+skills:
+  - file: devialet-discover-installation.md
+    name: Discover a Devialet installation
+    description: >-
+      Find every Devialet device on the local network over mDNS, resolve the device/system/group
+      topology, and read current playback state and volume. Prerequisite for the other skills.
+    api: openapi/devialet-ip-control-openapi.yml
+    operations:
+      - getDevice
+      - getSystem
+      - listGroupSources
+      - getGroupCurrentSource
+      - getSystemVolume
+  - file: devialet-control-playback.md
+    name: Control playback on a Devialet group
+    description: >-
+      Select a source and drive play, pause, mute, unmute, next, and previous at the group level,
+      handling asynchronous play completion, the independent play/mute state machines, and the two
+      operations that are not safe to retry.
+    api: openapi/devialet-ip-control-openapi.yml
+    operations:
+      - listGroupSources
+      - getGroupCurrentSource
+      - playGroupSource
+      - pauseGroupPlayback
+      - muteGroupPlayback
+      - unmuteGroupPlayback
+      - nextGroupTrack
+      - previousGroupTrack
+  - file: devialet-tune-sound.md
+    name: Tune sound on a Devialet system
+    description: >-
+      Set volume, equalizer preset and per-band gains, and night mode at the system level,
+      respecting the DOS 2.16 feature gates, the system-leader requirement for writes, and the
+      gain rounding rules.
+    api: openapi/devialet-ip-control-openapi.yml
+    operations:
+      - getSystem
+      - getSystemVolume
+      - setSystemVolume
+      - systemVolumeUp
+      - systemVolumeDown
+      - getSystemEqualizer
+      - setSystemEqualizer
+      - getSystemNightMode
+      - setSystemNightMode
+not_covered:
+  - area: power and factory reset
+    operations:
+      - powerOffDevice
+      - restartDevice
+      - resetDeviceToFactorySettings
+      - powerOffSystem
+      - restartSystem
+      - resetSystemToFactorySettings
+    reason: >-
+      Deliberately not packaged as an agent skill. There is no power-on endpoint — Devialet
+      documents that exiting OFF mode requires pressing a physical button — so powerOff is one-way
+      over the network, and the factory-reset operations erase network credentials and can make a
+      Wi-Fi-only device permanently unreachable. These belong behind explicit human confirmation,
+      not behind an agent skill. Their consequence classification is recorded in
+      overlays/devialet-ip-control-overlay.yaml and mcp/devialet-mcp.yml.
+  - area: Bluetooth pairing
+    operations: [startSystemBluetoothAdvertising]
+    reason: >-
+      A single self-expiring command with no multi-step flow around it; it does not warrant its own
+      skill. Documented in the OpenAPI and exposed as an MCP tool.
+cross_cutting_rules:
+  - >-
+    Application errors are returned with HTTP status 200 and an `error` object in the body. Testing
+    only the HTTP status will treat failures as successes. See errors/devialet-error-codes.yml.
+  - >-
+    POST requests require Content-Type: application/json. Omitting it returns HTTP 415. A
+    successful command returns an empty JSON object.
+  - >-
+    The only supported identifier value in all three namespaces is the literal `current`, resolved
+    relative to the device that receives the request.
+  - >-
+    Capability availability is gated by device firmware (DOS 2.14 vs 2.16), not by an API version.
+    Read release.version from getDevice and availableFeatures from getSystem before writing.
+  - >-
+    There is no event, webhook, or subscription surface. Agents must poll.
+  - >-
+    No authentication is required, so LAN reachability is the entire trust boundary.

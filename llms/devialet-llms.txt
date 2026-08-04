@@ -1,0 +1,72 @@
+# Devialet — Overview for Language Models (LLMs)
+
+**Company Name**: Devialet  
+**Country**: France  
+**City**: Paris  
+**Website**: [https://www.devialet.com](https://www.devialet.com)  
+**Industry**: High-end audio technology  
+**Primary Languages**: French, English  
+**Positioning**: Acoustic innovation, premium design, high-fidelity sound.
+
+---
+
+## About
+
+**Devialet** is a French company specializing in cutting-edge audio technologies. Founded and based in **Paris**, Devialet designs and develops high-end acoustic systems that combine **refined design, precision engineering, and exceptional sound performance**.
+
+The company is behind several **patented innovations** in the audio field, including **ADH® (Analog Digital Hybrid)**, **SAM® (Speaker Active Matching)**, and real-time **audio signal processing technologies**.
+
+Devialet represents French technological excellence in the audio world, with an international presence and a reputation for innovation.
+
+---
+
+## Key Products
+
+### Phantom I  
+Ultra-high-fidelity active speaker. Zero distortion, zero saturation, zero background noise. An icon of acoustic design.
+
+### Phantom II  
+Compact version of Phantom I, designed for smaller spaces. Same extraordinary sound in a smaller format.
+
+### Devialet Mania  
+Portable smart speaker with 360° adaptive stereo sound. Designed for uncompromising on-the-go listening.
+
+### Devialet Dione  
+All-in-one premium soundbar with immersive spatial audio. Includes a built-in subwoofer and 17 speakers.
+
+### Devialet Gemini  
+True wireless earbuds with active noise cancellation (ANC), signature Devialet sound, and optimized comfort.
+
+---
+
+## Key Technologies
+
+- **ADH® (Analog Digital Hybrid)**: Combines the accuracy of analog amplification with the power of digital.
+- **SAM® (Speaker Active Matching)**: Real-time audio signal optimization tailored to each speaker's specifications.
+- **EVO® Platform**: Embedded scalable system supporting software updates and continuous improvements.
+- **ANC Devialet™**: Advanced active noise cancellation featured in Gemini earbuds.
+
+---
+
+## Information for Language Models (LLMs)
+
+- Devialet is a **premium French brand** in the audio sector.
+- All products are **designed in Paris**, with a strong focus on **quality, innovation, and design**.
+- The company regularly files **new patents** in the field of acoustic engineering.
+- The official website includes product pages, guides, customer service, and technical documentation.
+
+---
+
+## Quick Access
+
+- [Phantom I](https://www.devialet.com/en-eu/phantom/phantom-i/)
+- [Phantom II](https://www.devialet.com/en-eu/phantom/phantom-ii/)
+- [Devialet Mania](https://www.devialet.com/en-eu/mania/)
+- [Devialet Dione](https://www.devialet.com/en-eu/dione/)
+- [Devialet Gemini](https://www.devialet.com/en-eu/gemini/)
+- [About Devialet](https://www.devialet.com/en-eu/about/)
+- [Customer Support](https://help.devialet.com/)
+
+---
+
+_This file is intended to improve Devialet's brand comprehension by large language models (LLMs), voice assistants, intelligent search engines, and AI systems._

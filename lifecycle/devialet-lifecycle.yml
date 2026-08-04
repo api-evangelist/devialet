@@ -1,0 +1,116 @@
+generated: '2026-08-04'
+method: searched
+source: https://help.devialet.com/hc/en-us/articles/4415207423378-Phantom-s-documentation-for-piloting-them-via-IP
+source_document: >-
+  Devialet IP Control — REFERENCE API DOCUMENTATION, Revision 1, December 2021
+  (openapi/_original/devialet-ip-control-r1.pdf)
+api: openapi/devialet-ip-control-openapi.yml
+
+versioning:
+  scheme: uri-path
+  current: v1
+  path_prefix: /ipcontrol/v1
+  advertised_in:
+    mechanism: mDNS TXT record
+    key: ipControlVersion
+    value: '1'
+  docs: https://help.devialet.com/hc/en-us/articles/4415207423378-Phantom-s-documentation-for-piloting-them-via-IP
+  stability_note: >-
+    Devialet explicitly reserves the right to change the /ipcontrol/v1 prefix and instructs
+    clients to read the advertised `path` TXT key instead of hard-coding it.
+
+release_model:
+  gated_by: device firmware (DOS), not an API version header
+  description: >-
+    Capability availability is a function of the firmware running on the device. Every endpoint,
+    and in some cases individual fields and HTTP methods, carries a minimal DOS version. A client
+    must read release.version from getDevice to know what a given device supports.
+  firmware_families:
+    - version: DOS 2.14.x
+      introduced_ip_control: true
+      capabilities:
+        - Support for Phantom I, Phantom II, Dialog, and Arch
+        - List available sources and their properties, including accessory sources
+        - Select any source
+        - Play / Pause / Mute / Unmute / Next / Previous when eligible
+        - Volume control
+        - Getting the system name
+        - Playback status info
+        - Stream metadata (artist, album, track) when eligible
+    - version: DOS 2.16.x
+      capabilities:
+        - Support for upcoming Devialet products
+        - Launch Bluetooth pairing
+        - Night mode setting
+        - Equalizer
+        - Power off, restart, reset to factory settings
+
+deprecation:
+  policy_url: null
+  policy_published: false
+  sunset_header: false
+  deprecation_header: false
+  deprecated_operations: []
+  note: >-
+    No deprecation policy, Sunset/Deprecation header support (RFC 8594), or removal timeline is
+    published for the IP Control API, and no operation in Revision 1 is marked deprecated. The
+    forward-compatibility contract runs the other way: endpoints added in future revisions return
+    404 on older firmware.
+
+sla:
+  url: null
+  uptime_target: null
+  note: >-
+    Not applicable in the usual sense. The API is served by the customer's own device on the
+    customer's own network; there is no Devialet-operated endpoint whose availability could be
+    covered by an SLA. The published operational budget is the 500 ms on-device processing time,
+    with a 1000 ms client timeout recommended.
+
+status_page: null
+status_page_note: >-
+  No status page was found. Probing https://status.devialet.com/ returned no DNS/connection
+  (curl exit code 000) on 2026-08-04.
+
+known_issues:
+  - firmware: DOS 2.14.x
+    issue: >-
+      availableOperations on getGroupCurrentSource is incorrect for the UPnP source — it lists
+      previous/next when they may not be available, and those operations do not work as expected
+      for UPnP.
+    fixed_in: DOS 2.16.x
+  - firmware: DOS 2.14.x
+    issue: release.version on getDevice is incorrect.
+    fixed_in: DOS 2.16.x
+  - firmware: DOS 2.14.x
+    issue: The InvalidValue error code is not implemented for invalid numerical values on POST.
+    fixed_in: DOS 2.16.x
+
+document_history:
+  - revision: 'Revision 1'
+    date: '2021-12'
+    summary: The initial version, covering DOS 2.14 and upcoming DOS 2.16.
+
+integration_ecosystem:
+  home_automation_drivers:
+    source: >-
+      Phantom Reactor Custom Technical Guide
+      (openapi/_original/devialet-phantom-reactor-custom-ci-techguide.pdf)
+    available: [Crestron, Control4]
+  note: >-
+    Devialet ships certified home-automation drivers alongside the raw API. The technical guide
+    for the custom-install product states the product is set up "using web interface and/or
+    external API commands" and that "all internal status can be monitored via external API
+    commands", making IP Control the primary integration contract for that SKU.
+
+x-evidence:
+  fetched: '2026-08-04'
+  probes:
+    - url: https://status.devialet.com/
+      http_status: null
+      result: no connection
+    - url: https://help.devialet.com/hc/en-us/articles/4415207423378-Phantom-s-documentation-for-piloting-them-via-IP
+      http_status: 403
+      result: Cloudflare bot challenge for non-browser clients
+    - url: https://web.archive.org/web/20250712105922if_/https://help.devialet.com/hc/en-us/article_attachments/4415236063506
+      http_status: 200
+      result: Devialet IP Control - R1.pdf retrieved (8 pages, application/pdf)

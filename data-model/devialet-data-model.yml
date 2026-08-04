@@ -1,0 +1,233 @@
+generated: '2026-08-04'
+method: derived
+source: openapi/devialet-ip-control-openapi.yml
+also_derived_from: openapi/_original/devialet-ip-control-r1.pdf
+summary: >-
+  Devialet IP Control models an "installation" — every Devialet device on one local network — as a
+  three-level containment hierarchy plus audio sources. A device is a physically separate product.
+  A system is a set of one or more speakers that always share playback state and volume (solo or
+  stereo). A group is a set of one or more systems playing the same content under the current
+  multi-room configuration. Every speaker belongs to exactly one system, and every system to
+  exactly one group, at any given moment. Accessories (Arch, Dialog) are devices that belong to no
+  system and no group, but the sources they host are visible to every group.
+identifiers:
+  format: UUIDv4
+  fields: [deviceId, systemId, groupId, sourceId]
+  aliases:
+    current: >-
+      The only identifier value supported today in all three namespaces. It resolves relative to
+      the "dispatcher" — the device that received the HTTP request. /devices/current is the
+      dispatcher itself, /systems/current its system, /groups/current its group.
+  serial:
+    field: serial
+    format: usually 13 ASCII characters
+    note: Read via getDevice; the mDNS hostname must not be parsed for this.
+entities:
+  - name: Installation
+    virtual: true
+    description: >-
+      All Devialet devices on a given local network, collectively. Not an addressable resource —
+      it is assembled client-side by discovering devices over mDNS and calling getDevice on each.
+  - name: Device
+    schema: '#/components/schemas/Device'
+    operations: [getDevice, powerOffDevice, restartDevice, resetDeviceToFactorySettings]
+    fields: [deviceId, systemId, groupId, model, release.version, serial, role, deviceName]
+    kinds:
+      - kind: speaker
+        examples: [Phantom I, Phantom II]
+        note: Carries systemId, groupId, and role.
+      - kind: accessory
+        examples: [Arch, Dialog]
+        note: >-
+          Carries no systemId and no groupId. /systems and /groups requests against an accessory
+          return HTTP 404.
+    roles: [FrontLeft, FrontRight, Mono]
+  - name: System
+    schema: '#/components/schemas/System'
+    operations:
+      - getSystem
+      - getSystemVolume
+      - setSystemVolume
+      - systemVolumeUp
+      - systemVolumeDown
+      - getSystemEqualizer
+      - setSystemEqualizer
+      - getSystemNightMode
+      - setSystemNightMode
+      - startSystemBluetoothAdvertising
+      - powerOffSystem
+      - restartSystem
+      - resetSystemToFactorySettings
+    fields: [systemId, groupId, systemName, availableFeatures]
+    types: [solo, stereo]
+    special_members:
+      system_leader: >-
+        One device in the system hosts system settings. Reading settings works from any device in
+        the system; changing them requires the leader to be reachable, otherwise
+        SystemLeaderAbsent is reported. Elected by firmware, not configurable.
+      source_hosts: >-
+        Different audio sources may live on different devices of the system — Bluetooth on the
+        left speaker, Spotify Connect on the right, physical inputs on their own connectors.
+  - name: Group
+    operations:
+      - listGroupSources
+      - getGroupCurrentSource
+      - playGroupSource
+      - pauseGroupPlayback
+      - muteGroupPlayback
+      - unmuteGroupPlayback
+      - nextGroupTrack
+      - previousGroupTrack
+    fields: [groupId]
+    note: >-
+      A group has no standalone GET representation in Revision 1; it is observed through its
+      sources and current playback state. Configured on the fly in the Devialet companion app.
+    special_members:
+      group_master: >-
+        One device belonging to the group, elected by firmware for certain features. Not
+        configurable. If the group master's system leaves the group, the group is destroyed.
+  - name: Source
+    schema: '#/components/schemas/Source'
+    operations: [listGroupSources, getGroupCurrentSource, playGroupSource]
+    fields: [sourceId, deviceId, type]
+    categories:
+      physical:
+        types: [phono, line, digital_left, digital_right, optical, opticaljack]
+        availability:
+          phono: Arch only
+          line: Arch only
+          digital_left: Arch only
+          digital_right: Arch only
+          optical: Phantom I, Dialog
+          opticaljack: Phantom II only
+        stream_sensing: [digital_left, digital_right, optical, opticaljack]
+      non_physical:
+        types: [spotifyconnect, airplay2, bluetooth, upnp, raat]
+    autoswitch: >-
+      All non-physical sources and the physical sources that support stream sensing support the
+      autoswitch feature, unless disabled in the Devialet companion app.
+  - name: CurrentSourceState
+    schema: '#/components/schemas/CurrentSourceState'
+    operations: [getGroupCurrentSource]
+    fields: [source, playingState, muteState, metadata, availableOperations]
+    state_machines:
+      playingState:
+        values: [playing, paused]
+        independent_of: muteState
+      muteState:
+        values: [muted, unmuted]
+        independent_of: playingState
+      note: >-
+        All four combinations are possible. Volume commands force muteState to unmuted but never
+        change playingState. Pausing a source that cannot semantically pause (for example optical)
+        mutes instead, leaving playingState as playing.
+  - name: TrackMetadata
+    schema: '#/components/schemas/TrackMetadata'
+    fields: [artist, album, title, coverArtUrl]
+    note: >-
+      Absent when the source provides no metadata. Retained while the source is paused. artist,
+      album, and title are always present when the object is present but may be empty strings;
+      coverArtUrl may be absent.
+  - name: Equalizer
+    schema: '#/components/schemas/Equalizer'
+    operations: [getSystemEqualizer, setSystemEqualizer]
+    fields: [enabled, preset, currentEqualization, customEqualization, gainRange, availablePresets]
+    presets: [flat, custom, voice]
+    band_labels: dynamic — vary by system; documented examples are low and high
+  - name: NightMode
+    schema: '#/components/schemas/NightMode'
+    operations: [getSystemNightMode, setSystemNightMode]
+    values: ['on', 'off']
+  - name: Volume
+    schema: '#/components/schemas/Volume'
+    operations: [getSystemVolume, setSystemVolume, systemVolumeUp, systemVolumeDown]
+    range: 0-100 (percent)
+    step: 5% of range for volumeUp / volumeDown, not configurable
+relationships:
+  - from: Group
+    to: System
+    kind: has_many
+    via: groupId
+    cardinality: 1..*
+    note: A group contains one or more systems.
+  - from: System
+    to: Group
+    kind: belongs_to
+    via: groupId
+    cardinality: exactly 1
+  - from: System
+    to: Device
+    kind: has_many
+    via: systemId
+    cardinality: 1..2
+    note: Solo systems hold one speaker, stereo systems hold two.
+  - from: Device
+    to: System
+    kind: belongs_to
+    via: systemId
+    cardinality: exactly 1 for speakers, 0 for accessories
+  - from: Device
+    to: Group
+    kind: belongs_to
+    via: groupId
+    cardinality: exactly 1 for speakers, 0 for accessories
+    note: Transitive — a speaker reaches its group through its system.
+  - from: Source
+    to: Device
+    kind: belongs_to
+    via: deviceId
+    cardinality: exactly 1
+    note: The hosting device may be a speaker or an accessory.
+  - from: Group
+    to: Source
+    kind: has_many
+    via: listGroupSources
+    note: >-
+      Membership is dynamic, not stored. Accessory-hosted sources are visible to every group, but
+      an accessory can only play in one group at a time.
+  - from: Group
+    to: CurrentSourceState
+    kind: has_one
+    via: sources/current
+    cardinality: 0..1
+    note: Absent when there is no current source; requests then report NoCurrentSource.
+  - from: CurrentSourceState
+    to: Source
+    kind: has_one
+    via: source
+  - from: CurrentSourceState
+    to: TrackMetadata
+    kind: has_one
+    via: metadata
+    cardinality: 0..1
+  - from: System
+    to: Volume
+    kind: has_one
+    via: sources/current/soundControl/volume
+    note: >-
+      All devices in a system share one volume. Group volume is an aggregate of its system
+      volumes; setting one system's volume does not change the others.
+  - from: System
+    to: Equalizer
+    kind: has_one
+    via: settings/audio/equalizer
+    requires: system leader reachable for writes; availableFeatures must include "equalizer"
+  - from: System
+    to: NightMode
+    kind: has_one
+    via: settings/audio/nightMode
+    requires: system leader reachable for writes; availableFeatures must include "nightMode"
+invariants:
+  - At any moment every speaker belongs to exactly one system and every system to exactly one group.
+  - Accessories (Arch, Dialog) belong to no system and no group.
+  - Systems only combine devices of the same family and power rating, which is why they share volume.
+  - >-
+    Selecting an AirPlay 2 or Roon Ready source removes the host system from its group, because
+    Apple and Roon implement multi-room grouping independently. If the system was alone it gets a
+    new groupId on every audio session; if it held the group master the group is destroyed and all
+    remaining systems move to their own groups.
+mutability:
+  client_writable: [volume, equalizer preset and custom gains, nightMode, playback state, mute state, power state]
+  companion_app_only: [group membership, system composition, Arch physical input selection, autoswitch]
+  firmware_only: [system leader election, group master election, source host assignment]
+render: null

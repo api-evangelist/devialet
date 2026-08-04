@@ -1,0 +1,64 @@
+generated: '2026-08-04'
+method: probed
+host: https://www.devialet.com
+result: none
+summary: >-
+  No /.well-known/ discovery documents are published on any Devialet host. The corporate site
+  answers 404 for every probed path. api.devialet.com resolves and answers but returns HTTP 503
+  for every path including the well-known set, so nothing could be observed there. The IP Control
+  API itself is served by customer-owned devices on the local network and has no internet host to
+  probe; its discovery mechanism is mDNS/DNS-SD rather than /.well-known (see
+  conventions/devialet-conventions.yml).
+documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+other_hosts:
+  - host: https://api.devialet.com
+    reachable: true
+    all_paths_status: 503
+    probed:
+      - {path: /, status: 503}
+      - {path: /openapi.json, status: 503}
+      - {path: /swagger.json, status: 503}
+      - {path: /docs, status: 503}
+      - {path: /.well-known/agent-card.json, status: 503}
+    note: >-
+      Host resolves and terminates TLS but every path returns 503 with a text/plain body. No API
+      surface could be observed. Not recorded as an API in apis.yml — a 503 is not evidence of a
+      contract.
+  - host: https://developer.devialet.com
+    reachable: false
+    note: No DNS resolution / no connection (curl exit code 000).
+  - host: https://help.devialet.com
+    reachable: true
+    note: >-
+      Zendesk Help Center. The public Help Center API
+      (/api/v2/help_center/en-us/articles/{id}.json) returned HTTP 401 "Couldn't authenticate
+      you", so the article content is not anonymously machine-readable.
+non_well_known_discovery:
+  - path: /llms.txt
+    host: https://www.devialet.com
+    status: 200
+    content_type: text/plain
+    file: ../llms/devialet-llms.txt
+  - path: /robots.txt
+    host: https://www.devialet.com
+    status: 200
+    sitemap: https://www.devialet.com/en-eu/sitemaps/sitemap.xml
+    sitemap_status: 403
+    note: The sitemap itself is behind a Cloudflare bot challenge for non-browser clients.
+x-evidence:
+  fetched: '2026-08-04'
+  method: 'curl -s -o /dev/null -w "%{http_code}" -L'

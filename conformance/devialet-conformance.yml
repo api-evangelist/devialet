@@ -1,0 +1,92 @@
+generated: '2026-08-04'
+method: derived
+source: openapi/devialet-ip-control-openapi.yml
+also_derived_from:
+  - openapi/_original/devialet-ip-control-r1.pdf
+  - conventions/devialet-conventions.yml
+  - errors/devialet-error-codes.yml
+  - authentication/devialet-authentication.yml
+standards:
+  - id: http11
+    conforms: true
+    evidence: >-
+      Plain HTTP request/response on port 80; documented GET (safe) and POST (unsafe) method
+      semantics, Content-Type negotiation, and 400/404/415/500 status usage.
+  - id: json
+    conforms: true
+    evidence: All request and response bodies are UTF-8 encoded JSON objects.
+  - id: rfc6762-mdns
+    conforms: true
+    evidence: >-
+      Devices register mDNS service instances; the reference documents avahi-browse output and
+      .local hostnames.
+  - id: rfc6763-dns-sd
+    conforms: true
+    evidence: >-
+      Service type _http._tcp with a TXT record carrying manufacturer, ipControlVersion, and path
+      keys; clients are instructed to filter on the TXT key/value pairs.
+  - id: tls
+    conforms: false
+    evidence: >-
+      'IP Control uses HTTP protocol.' No HTTPS listener is documented and port 80 is the
+      advertised mDNS port.
+  - id: oauth2
+    conforms: false
+    evidence: No securitySchemes; the reference states no authentication is required.
+  - id: oidc
+    conforms: false
+    evidence: No OpenID Connect discovery or identity layer.
+  - id: rfc9457-problem-details
+    conforms: false
+    evidence: >-
+      A proprietary envelope ({error:{code,details,message}}) returned with HTTP 200, not
+      application/problem+json. See errors/devialet-error-codes.yml.
+  - id: rfc8594-sunset-header
+    conforms: false
+    evidence: No Sunset or Deprecation header support is documented.
+  - id: rfc9116-security-txt
+    conforms: false
+    evidence: 'https://www.devialet.com/.well-known/security.txt returned HTTP 404 on 2026-08-04.'
+  - id: idempotency-key
+    conforms: false
+    evidence: >-
+      No Idempotency-Key header. Devialet instead documents natural, state-based repeat-safety per
+      command — see the idempotency block in conventions/devialet-conventions.yml.
+  - id: pagination
+    conforms: false
+    applicable: false
+    evidence: No paginated collection exists; listGroupSources returns the full list.
+  - id: rate-limit-headers
+    conforms: false
+    evidence: No rate-limit signalling headers or published quotas.
+  - id: asyncapi
+    conforms: false
+    applicable: false
+    evidence: >-
+      'Asynchronous access to the information (notifications) is not available yet.' Endpoints are
+      annotated NOTIFICATION as a reservation, but no event, webhook, or streaming surface exists
+      in Revision 1. Clients poll.
+  - id: openapi
+    conforms: false
+    evidence: >-
+      Devialet publishes the contract as a PDF reference document, not as a machine-readable
+      specification. openapi/devialet-ip-control-openapi.yml is an API Evangelist derivation of
+      that document, not a Devialet artifact.
+  - id: mcp
+    conforms: false
+    evidence: No Model Context Protocol server is published.
+  - id: a2a
+    conforms: false
+    evidence: >-
+      No agent card at /.well-known/agent-card.json or /.well-known/agent.json on
+      www.devialet.com (both HTTP 404 on 2026-08-04).
+product_regulatory:
+  declarations_of_conformity:
+    published: true
+    url: https://www.devialet.com/en-eu/legal/compliance/
+    scope: >-
+      Per-product declarations of conformity for Arch, Devialet Dione, Devialet Gemini, Devialet
+      Gemini II, Devialet Mania, Expert Pro, Phantom I, Phantom II, Phantom II Custom, and Remote.
+    note: >-
+      This is hardware/product regulatory conformity, not an information-security certification
+      program. No SOC 2, ISO 27001, PCI DSS, HIPAA, or FedRAMP attestation was found for Devialet.

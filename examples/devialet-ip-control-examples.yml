@@ -1,0 +1,182 @@
+generated: '2026-08-04'
+method: searched
+source: https://help.devialet.com/hc/en-us/articles/4415207423378-Phantom-s-documentation-for-piloting-them-via-IP
+source_document: >-
+  Devialet IP Control — REFERENCE API DOCUMENTATION, Revision 1, December 2021
+  (openapi/_original/devialet-ip-control-r1.pdf)
+api: openapi/devialet-ip-control-openapi.yml
+note: >-
+  Every payload below is transcribed verbatim from Devialet's own reference documentation. Nothing
+  here is synthesized. The same examples are wired inline into the OpenAPI.
+examples:
+  - operation: getDevice
+    path: /devices/current
+    method: GET
+    name: accessory
+    summary: An Arch accessory — no systemId or groupId, no role
+    response:
+      deviceId: f42cf307-f5bb-4311-a917-1e06d404f595
+      model: Arch
+      release:
+        version: 2.14.2
+      serial: P35V12345UX02
+      deviceName: "      \U0001F4BF CD Player"
+  - operation: getDevice
+    path: /devices/current
+    method: GET
+    name: speaker
+    summary: A Phantom II speaker — carries systemId, groupId, and role
+    response:
+      deviceId: 5b35aa24-e4c9-4942-a501-7b0cf5c1e892
+      systemId: 44a53d02-c69f-4a01-a0ce-1b6588b1d5b1
+      groupId: 0e985d77-8212-4b48-842b-9e102d52887e
+      model: Phantom II 98 dB
+      release:
+        version: 2.14.2
+      role: Mono
+      serial: P35V12345TQ9A
+      deviceName: Kitchen
+  - operation: getSystem
+    path: /systems/current
+    method: GET
+    name: system
+    summary: A system exposing both optional DOS 2.16 features
+    response:
+      systemId: 13531594-b1c1-42c7-8d5a-18fa9e5d7cd4
+      groupId: 0e985d77-8212-4b48-842b-9e102d52887e
+      systemName: "Dining room \U0001F374"
+      availableFeatures:
+        - equalizer
+        - nightMode
+  - operation: getSystemVolume
+    path: /systems/current/sources/current/soundControl/volume
+    method: GET
+    name: volume
+    response:
+      volume: 35
+  - operation: setSystemVolume
+    path: /systems/current/sources/current/soundControl/volume
+    method: POST
+    name: volume
+    request:
+      volume: 35
+    response: {}
+  - operation: getSystemEqualizer
+    path: /systems/current/settings/audio/equalizer
+    method: GET
+    name: equalizer
+    summary: Flat preset selected, with custom gains stored but not active
+    response:
+      preset: flat
+      currentEqualization:
+        low:
+          frequency: 400
+          gain: 0
+        high:
+          frequency: 2000
+          gain: 0
+      customEqualization:
+        low:
+          gain: -0.5
+        high:
+          gain: 2.25
+      gainRange:
+        min: -6
+        max: 6
+        stepPrecision: 1
+      availablePresets:
+        - flat
+        - custom
+        - voice
+  - operation: setSystemEqualizer
+    path: /systems/current/settings/audio/equalizer
+    method: POST
+    name: customPreset
+    summary: Select the custom preset and set both band gains at once
+    request:
+      preset: custom
+      customEqualization:
+        low:
+          gain: 3.0
+        high:
+          gain: 3.0
+    response: {}
+  - operation: setSystemEqualizer
+    path: /systems/current/settings/audio/equalizer
+    method: POST
+    name: flatPreset
+    summary: Switch preset only, leaving stored custom gains untouched
+    request:
+      preset: flat
+    response: {}
+  - operation: setSystemNightMode
+    path: /systems/current/settings/audio/nightMode
+    method: POST
+    name: nightModeOn
+    request:
+      nightMode: 'on'
+    response: {}
+  - operation: getGroupCurrentSource
+    path: /groups/current/sources/current
+    method: GET
+    name: playing
+    summary: >-
+      Spotify Connect playing with full metadata. Note that availableOperations omits next and
+      previous here, and that mute/unmute are never listed because they are always available.
+    response:
+      source:
+        sourceId: 213a3ed0-1fb9-4da2-bcf4-066da0f7b27e
+        deviceId: 13531594-b1c1-42c7-8d5a-18fa9e5d7cd4
+        type: spotifyconnect
+      playingState: playing
+      muteState: unmuted
+      metadata:
+        artist: Michael Jackson
+        album: Thriller
+        track: Billie Jean
+        coverArtUrl: https://cdn.spotify.com/covers/4729028427.png
+      availableOperations:
+        - play
+        - pause
+        - seek
+    x-note: >-
+      Devialet's published example uses the key "track" inside metadata, while the field
+      specification in the same document names it "title". Transcribed here exactly as published;
+      the OpenAPI follows the field specification. Clients should tolerate both.
+  - operation: '*'
+    name: regularError
+    summary: The regular error envelope, returned with HTTP status 200
+    response:
+      error:
+        code: UnreachableDevices
+  - operation: '*'
+    name: successfulCommand
+    summary: A successful POST command returns an empty JSON object
+    response: {}
+discovery_example:
+  summary: mDNS browse output published in the reference documentation
+  command: avahi-browse -r _http._tcp
+  instances:
+    - name: Living room
+      hostname: PhantomII98dB-L32Z12345TQ9A.local
+      address: 192.168.1.26
+      port: 80
+      txt:
+        path: /
+    - name: Living room-ipcontrol
+      hostname: PhantomII98dB-L32Z12345TQ9A.local
+      address: 192.168.1.26
+      port: 80
+      txt:
+        path: /ipcontrol/v1
+        ipControlVersion: '1'
+        manufacturer: Devialet
+curl_examples:
+  - summary: IPv6 link-local call published in the reference documentation
+    command: >-
+      curl -H 'Content-Type:' -X POST -d '{}' -g -6
+      'http://[fe80::525b:c2ff:fe9c:7955%enp0s31f6]:80/ipcontrol/v1/devices/current/identify'
+    note: >-
+      Devialet uses this to illustrate that link-local IPv6 works from the command line but not in
+      browsers. It targets /devices/{deviceId}/identify, which the reference names but never
+      specifies — see referenced_but_unspecified in conventions/devialet-conventions.yml.

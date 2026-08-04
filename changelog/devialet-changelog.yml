@@ -1,0 +1,71 @@
+generated: '2026-08-04'
+method: searched
+source: https://help.devialet.com/hc/en-us/articles/4415207423378-Phantom-s-documentation-for-piloting-them-via-IP
+source_document: >-
+  Devialet IP Control — REFERENCE API DOCUMENTATION, Revision 1, December 2021
+  (openapi/_original/devialet-ip-control-r1.pdf), sections "Minimal firmware versions" and
+  "Document history"
+api: openapi/devialet-ip-control-openapi.yml
+scheme:
+  api_version: v1
+  document_revision: 'Revision 1'
+  capability_versioning: device firmware (DOS)
+  note: >-
+    Devialet publishes no rolling dated changelog for the IP Control API. Change is recorded in two
+    places inside the reference document itself: the document history, and the per-firmware
+    capability table that gates which endpoints and fields exist on a given device. Both are
+    captured below. This is the complete published history as of Revision 1.
+current:
+  api_version: '1'
+  document_revision: 'Revision 1'
+  document_date: '2021-12'
+  latest_documented_firmware: DOS 2.16.x
+entries:
+  - version: 'Revision 1'
+    date: '2021-12'
+    type: document
+    summary: The initial version of the reference API documentation, covering DOS 2.14 and upcoming DOS 2.16.
+    breaking: false
+  - version: DOS 2.16.x
+    date: null
+    type: firmware
+    summary: Second capability wave — audio settings, Bluetooth pairing, and power management.
+    breaking: false
+    additions:
+      - Support for upcoming Devialet products
+      - Launch Bluetooth pairing (startSystemBluetoothAdvertising)
+      - Night mode setting (getSystemNightMode, setSystemNightMode)
+      - Equalizer (getSystemEqualizer, setSystemEqualizer)
+      - Power off, restart, reset to factory settings at both device and system level
+      - availableFeatures field on getSystem
+    fixes:
+      - availableOperations now correct for the UPnP source
+      - release.version on getDevice now correct
+      - InvalidValue error code now implemented for invalid numerical values
+  - version: DOS 2.14.x
+    date: null
+    type: firmware
+    summary: IP Control introduced. First firmware to expose HTTP control endpoints.
+    breaking: false
+    additions:
+      - Support for Phantom I, Phantom II, Dialog, and Arch
+      - List available sources and their properties, including accessory sources
+      - Select any source
+      - Play, Pause, Mute, Unmute, Next, Previous when eligible
+      - Volume control
+      - Getting the system name
+      - Playback status info
+      - Stream metadata (artist, album, track) when eligible
+    known_issues:
+      - availableOperations incorrect for the UPnP source; next/previous do not work for UPnP
+      - release.version on getDevice incorrect
+      - InvalidValue not implemented for invalid numerical values on POST
+compatibility_policy:
+  - GET responses may gain undocumented fields at any time; clients must ignore them.
+  - >-
+    Request bodies may carry documented parameters from future revisions; older firmware is
+    guaranteed to ignore them.
+  - >-
+    Documented endpoints from future revisions are guaranteed to return HTTP 404 on older firmware,
+    which is the intended feature-detection mechanism alongside reading release.version.
+  - The /ipcontrol/v1 prefix itself may change; clients must read the mDNS TXT `path` key.

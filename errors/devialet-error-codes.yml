@@ -1,0 +1,130 @@
+generated: '2026-08-04'
+method: searched
+source: https://help.devialet.com/hc/en-us/articles/4415207423378-Phantom-s-documentation-for-piloting-them-via-IP
+source_document: >-
+  Devialet IP Control — REFERENCE API DOCUMENTATION, Revision 1, December 2021
+  (openapi/_original/devialet-ip-control-r1.pdf), section "Error handling"
+format: proprietary
+rfc9457: false
+envelope:
+  description: >-
+    Devialet returns application-level ("regular") errors inside an HTTP 200 OK response. The
+    body is a JSON object with a single `error` key. Transport-level problems use real HTTP
+    status codes and carry an empty body (400, 404, 415) or an unsupported body (500).
+  http_status: 200
+  media_type: application/json
+  shape:
+    error:
+      code: '<String> — a predefined error identifier'
+      details: '<Object> (optional) — structured data whose shape depends on the code'
+      message: '<String> (optional) — debug only; not for display or programmatic use'
+  example:
+    error:
+      code: UnreachableDevices
+  forward_compatibility: >-
+    Clients must handle unknown error codes gracefully and show a generic message, because
+    firmware updates can introduce codes the client does not know.
+error_codes:
+  - code: Error
+    scope: all
+    meaning: Generic error with no available details.
+    remediation: Show a generic failure message; retry or re-query state.
+  - code: UnreachableDevices
+    scope: any request requiring communication with other devices
+    meaning: >-
+      One or more devices in the installation could not be reached. The request may have been
+      abandoned entirely or carried out only on the reachable devices.
+    remediation: >-
+      The state of devices other than the dispatcher is undefined and must be re-queried with
+      getDevice / getSystem / getGroupCurrentSource.
+  - code: UnreachableDevice
+    scope: startSystemBluetoothAdvertising
+    meaning: >-
+      The device elected to perform Bluetooth advertising could not be reached by the dispatcher.
+    remediation: Retry against a different device in the system, or check network reachability.
+  - code: Timeout
+    scope: all
+    meaning: The request could not be carried out in the allotted time.
+    remediation: The resulting state is undefined and should be re-queried before retrying.
+  - code: NoCurrentSource
+    scope: >-
+      requests beginning /groups/{groupId}/sources/current or
+      /systems/{systemId}/sources/current
+    meaning: There is no current source on the group or system.
+    remediation: >-
+      Call listGroupSources and select a source with playGroupSource before issuing
+      current-source commands.
+  - code: InvalidValue
+    scope: any POST that sets a value
+    meaning: >-
+      The provided value has the wrong type or format, is not in the allowed value list, or is
+      out of range — unless a more specific code is defined. A fractional number sent where an
+      integer is expected is rounded rather than rejected.
+    remediation: >-
+      Validate against the documented enums and ranges (volume 0-100; equalizer gain within
+      gainRange.min..max at gainRange.stepPrecision).
+    known_issue: Not implemented for invalid numerical values on DOS 2.14.x; fixed in DOS 2.16.x.
+  - code: SystemLeaderAbsent
+    scope: >-
+      POST setSystemEqualizer, setSystemNightMode, and any command requiring the system leader
+    meaning: >-
+      The system leader (the single device that hosts system settings) is not reachable. The
+      system state is not modified.
+    remediation: >-
+      Reading system settings works from any device in the system, but changing them requires the
+      leader. Wait for the leader to come back or power it on. The leader is elected by firmware
+      and cannot be chosen.
+  - code: UnreachableSource
+    scope: commands requiring the current or a designated source
+    meaning: The device hosting that source is absent. The system state is not modified.
+    remediation: Re-query listGroupSources; the source list changes when devices go offline.
+  - code: PlaybackNoStream
+    scope: playGroupSource
+    meaning: >-
+      Playback could not start — no cable on a sensing input (opticaljack), no lock on a digital
+      input (digital_left, digital_right, optical), an audio session that could not be
+      re-established (torn-down or unreachable AirPlay/Bluetooth/UPnP/Roon source, expired or
+      revoked Spotify Connect token), or an unsupported detected format.
+    remediation: >-
+      The designated source still becomes current, with no sound. Check the physical input or
+      re-authorise the streaming service, then retry.
+  - code: PlaybackOperationNotAvailable
+    scope: nextGroupTrack, previousGroupTrack
+    meaning: The current source does not offer the requested playback operation.
+    remediation: >-
+      Read availableOperations from getGroupCurrentSource before issuing next/previous. The list
+      changes without the source changing (last track in a playlist, free Spotify accounts).
+    known_issue: >-
+      availableOperations is incorrect for the UPnP source on DOS 2.14.x (next/previous are
+      listed but do not work); fixed in DOS 2.16.x.
+http_statuses:
+  - status: 200
+    meaning: >-
+      Success, or a regular application error carried in the body. A successful POST returns an
+      empty JSON object.
+    body: json
+  - status: 400
+    meaning: Malformed JSON request.
+    body: empty
+    note: Should not occur in a correctly implemented client.
+  - status: 404
+    meaning: >-
+      Non-existing endpoint. Also returned when a /systems or /groups request is performed
+      against a non-speaker accessory such as Arch or Dialog, and when a documented endpoint from
+      a future API revision is called on older firmware.
+    body: empty
+    note: An incorrect sourceId does NOT produce a 404 — it produces a 200 regular error.
+  - status: 415
+    meaning: >-
+      Invalid or missing Content-Type header on a POST. The only allowed value is
+      application/json.
+    body: empty
+  - status: 500
+    meaning: Unexpected internal error.
+    body: json
+    note: >-
+      The body follows the regular error format but its content is not part of the officially
+      supported API. Any other status code must be treated the same way.
+agent_guidance: >-
+  A non-2xx check is not sufficient for this API. Clients and agents MUST parse the 200 response
+  body and test for the presence of an `error` key before treating a call as successful.

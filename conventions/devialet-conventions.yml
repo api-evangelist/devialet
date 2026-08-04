@@ -1,0 +1,224 @@
+generated: '2026-08-04'
+method: searched
+source: https://help.devialet.com/hc/en-us/articles/4415207423378-Phantom-s-documentation-for-piloting-them-via-IP
+source_document: >-
+  Devialet IP Control — REFERENCE API DOCUMENTATION, Revision 1, December 2021
+  (openapi/_original/devialet-ip-control-r1.pdf)
+api: openapi/devialet-ip-control-openapi.yml
+
+transport:
+  protocol: http
+  tls: false
+  port: 80
+  ip_versions: [ipv4, ipv6]
+  url_form: 'http://IPADDRESS/ipcontrol/v1/PATH/TO/ENDPOINT'
+  example: 'http://192.168.1.20/ipcontrol/v1/devices/current/identify'
+  note: >-
+    Devialet advises against hard-coding the /ipcontrol/v1 prefix. Clients should read the `path`
+    key from the TXT record of the mDNS service instance, because the prefix may change in a
+    future revision.
+  ipv6_note: >-
+    Link-local IPv6 addresses work from command-line clients but are rejected by virtually all
+    browser address bars.
+
+discovery:
+  mechanism: mDNS / DNS-SD
+  service_type: _http._tcp
+  required_txt_keys:
+    manufacturer: Devialet
+    ipControlVersion: '1'
+  path_txt_key: path
+  hostname_prefixes: [PhantomI, PhantomII, Arch, Dialog]
+  guidance:
+    - Filter service instances on the TXT record, not the hostname.
+    - >-
+      Do not use the mDNS service name for display — mDNS name-conflict resolution can alter it.
+      Use `systemName` from getSystem instead.
+    - >-
+      Do not use the hostname parameter in any way; it does not change when the device or system
+      is renamed and is not a stable contract.
+    - Use getDevice to read the model name and serial number rather than parsing the hostname.
+  alternative: >-
+    Fixed IP addresses configured on the devices or reserved on the router, with the client
+    configured to match. This is the approach Devialet recommends for custom-install deployments.
+
+authentication:
+  style: none
+  detail: authentication/devialet-authentication.yml
+
+request_semantics:
+  queries:
+    method: GET
+    body: must be empty
+    parameters: none — every parameter is part of the request URL
+    guarantee: guaranteed to have no impact on the state of the controlled devices
+    response: valid JSON object, UTF-8
+  commands:
+    method: POST
+    required_headers:
+      Content-Type: application/json
+    body: >-
+      A valid UTF-8 JSON object. For commands with no parameters the body may be empty or an
+      empty JSON object ({}).
+    response: an empty JSON object on success
+    note: >-
+      Omitting Content-Type, or sending any other value, returns HTTP 415. Request bodies must
+      not contain undocumented parameters — device behaviour is undefined if they do.
+
+idempotency:
+  supported: true
+  style: natural
+  idempotency_key: false
+  key_header: null
+  scope: per-command, state-based
+  description: >-
+    Devialet does not provide an idempotency-key header. Instead, the reference documentation
+    defines an explicit repeat-safe contract per command: issuing a command whose effect already
+    matches the current state succeeds rather than erroring. This makes the documented POST
+    commands safe to re-send after a timeout or an UnreachableDevices error without a
+    reconciliation step.
+  documented_guarantees:
+    - operation: setSystemVolume
+      quote: 'All volume commands unmute the current source. On the other hand, they do not change the playingState.'
+    - operation: systemVolumeUp
+      quote: 'If the current volume is already 100%, the request succeeds.'
+    - operation: systemVolumeDown
+      quote: 'If the current volume is already 0%, the request succeeds.'
+    - operation: setSystemEqualizer
+      quote: 'If provided equalizer parameters already correspond to the current state, the call will succeed.'
+    - operation: setSystemNightMode
+      quote: 'If the selection already corresponds to the current state, the call will succeed.'
+    - operation: playGroupSource
+      quote: "If the group's current source is already playing and it matches the designated source, the call will succeed."
+    - operation: pauseGroupPlayback
+      quote: 'If the system is already paused, the call will succeed.'
+    - operation: muteGroupPlayback
+      quote: 'If the system is already muted, the call will succeed.'
+    - operation: unmuteGroupPlayback
+      quote: 'If the system is already unmuted, the call will succeed.'
+    - operation: startSystemBluetoothAdvertising
+      quote: >-
+        'If this command is issued while advertising is ongoing, the timeout will be set to
+        1 minute after the moment of the latest call.'
+  caveats:
+    - >-
+      systemVolumeUp and systemVolumeDown are relative, not absolute — they are repeat-safe only
+      at the 0%/100% boundaries. For a retry-safe volume change, use setSystemVolume with an
+      absolute value.
+    - >-
+      nextGroupTrack and previousGroupTrack advance the playlist and are NOT idempotent. Retrying
+      them after an ambiguous failure will skip additional tracks.
+    - >-
+      playGroupSource may have asynchronous effects. Even on a reported success, clients must
+      re-read getGroupCurrentSource (and playingState in particular) to confirm the outcome; a
+      delayed play failure produces no notification.
+    - >-
+      After Timeout or UnreachableDevices, the reference states the resulting state is undefined
+      and must be re-queried before any retry decision.
+
+pagination:
+  supported: false
+  note: >-
+    No collection in this API is paginated. listGroupSources returns the complete source list for
+    the group in a single `sources` array.
+
+filtering_and_expansion:
+  supported: false
+  sparse_fieldsets: false
+  metadata_fields: false
+
+request_tracing:
+  request_id_header: null
+  supported: false
+
+rate_limiting:
+  documented: false
+  signalling_headers: []
+  note: >-
+    No rate limits are published. The relevant budget is the device processing time: the reference
+    allows up to 500 ms of on-device processing before the response is sent.
+
+timeouts:
+  device_processing_budget_ms: 500
+  recommended_additional_ms: 500
+  recommended_client_timeout_ms: 1000
+  model: synchronous request/response
+
+versioning:
+  scheme: uri-path
+  current: v1
+  path_prefix: /ipcontrol/v1
+  advertised_in: mDNS TXT key ipControlVersion
+  document_revision: 'Revision 1 — December 2021'
+  feature_gating: >-
+    Availability is gated by device firmware version, not by an API version. Each endpoint and
+    several individual fields carry a minimal DOS firmware version (2.14 or 2.16), captured as
+    x-devialet-minimal-firmware on every operation in the OpenAPI.
+  forward_compatibility:
+    - >-
+      GET responses may contain additional undocumented fields. They are not part of the supported
+      API, can change without notice, and must be ignored by clients.
+    - >-
+      Request bodies may carry documented parameters from future API revisions; devices running
+      older revisions are guaranteed to ignore them.
+    - >-
+      Calling a documented endpoint from a future revision against older firmware is guaranteed to
+      return 404 Not Found. This only applies to paths under /ipcontrol.
+    - Calling an undocumented endpoint produces undefined behaviour.
+
+error_envelope:
+  style: envelope-in-200
+  detail: errors/devialet-error-codes.yml
+  summary: >-
+    Application errors are returned with HTTP 200 and an `error` object in the body. Only
+    transport-level problems use HTTP error statuses (400 malformed JSON, 404 unknown endpoint,
+    415 wrong Content-Type, 500 internal). Clients must inspect the 200 body for an `error` key.
+
+events:
+  webhooks: false
+  streaming: false
+  subscriptions:
+    status: not-available
+    quote: 'Asynchronous access to the information (notifications) is not available yet.'
+    note: >-
+      Several endpoints are annotated "GET, NOTIFICATION" in the reference, reserving a future
+      notification channel, but Revision 1 states subscriptions are not implemented. Clients must
+      poll.
+  recommended_polling_endpoints:
+    - /groups/current/sources
+    - /groups/current/sources/current
+    - /systems/current/sources/current/soundControl/volume
+    - /groups/current/sources/current/playback/position
+
+resource_model:
+  detail: data-model/devialet-data-model.yml
+  summary: >-
+    Three namespaces with different blast radius. /devices acts on a single device. /systems acts
+    on every accessible device in the system (settings are hosted by an elected "system leader").
+    /groups acts on every device in every system of the group. The device that receives the
+    request is the "dispatcher" and forwards commands onward. Today the only supported identifier
+    in all three namespaces is the literal `current`, resolved relative to the dispatcher.
+  operation_placement:
+    playback: group level
+    volume: system level
+    audio_settings: system level (requires the system leader)
+    identity_and_power: device or system level
+
+referenced_but_unspecified:
+  description: >-
+    Paths that appear in Devialet's own reference document but have no specified request/response
+    contract in Revision 1. They are deliberately excluded from
+    openapi/devialet-ip-control-openapi.yml rather than guessed at.
+  paths:
+    - path: /devices/{deviceId}/identify
+      appears_in: 'Color code section (as the endpoint example) and The global prefix section (example URL)'
+      specified: false
+    - path: /groups/{groupId}/sources/current/soundControl/volume
+      appears_in: 'Sample implementation section, written as /{groups,systems}/current/sources/current/soundControl/volume'
+      specified: false
+      note: >-
+        The Volume section describes group-volume semantics as an aggregate of system volumes, but
+        only the /systems form has a documented endpoint section.
+    - path: /groups/{groupId}/sources/current/playback/position
+      appears_in: 'Sample implementation section, recommended polling list'
+      specified: false

@@ -1,0 +1,1188 @@
+openapi: 3.1.0
+info:
+  title: Devialet IP Control API
+  version: '1'
+  summary: Local-network HTTP control API for Devialet Phantom speakers and accessories.
+  description: >-
+    The Devialet IP Control API is an unauthenticated HTTP API served by Devialet devices
+    themselves on the local network. Starting with DOS 2.14 firmware, the Phantom range
+    (Phantom I, Phantom II, and the Arch and Dialog accessories) exposes device, system, and
+    group state plus playback, volume, equalizer, night-mode, Bluetooth pairing, and
+    power/restart/factory-reset commands over plain HTTP on port 80 under the
+    `/ipcontrol/v1` path prefix. Devices are discovered with mDNS/DNS-SD: they register
+    `_http._tcp` service instances whose TXT record carries `manufacturer=Devialet`,
+    `ipControlVersion=1`, and `path=/ipcontrol/v1`. Queries use GET and are guaranteed not
+    to change device state; commands use POST and require `Content-Type: application/json`.
+    Regular (non-transport) errors are returned inside a `200 OK` response as an `error`
+    object rather than as an HTTP error status.
+  x-provenance:
+    method: derived
+    generated: '2026-08-04'
+    derived_from: openapi/_original/devialet-ip-control-r1.pdf
+    source_document: Devialet IP Control — REFERENCE API DOCUMENTATION, Revision 1, December 2021
+    source_url: https://help.devialet.com/hc/en-us/articles/4415207423378-Phantom-s-documentation-for-piloting-them-via-IP
+    attachment_url: https://help.devialet.com/hc/en-us/article_attachments/4415236063506
+    note: >-
+      Devialet publishes this API as a PDF reference document, not as a machine-readable
+      specification. This OpenAPI is an API Evangelist derivation that transcribes only what
+      the Revision 1 reference document specifies. It is not published or endorsed by
+      Devialet. Endpoints that the reference mentions in passing but does not specify
+      (`/devices/{deviceId}/identify`, `/groups/{groupId}/sources/current/soundControl/volume`,
+      `/groups/{groupId}/sources/current/playback/position`) are deliberately omitted here and
+      recorded in conventions/devialet-conventions.yml instead.
+  contact:
+    name: Devialet Help Center
+    url: https://help.devialet.com/
+  license:
+    name: '© 2021 Devialet. All rights reserved.'
+    url: https://www.devialet.com/en-eu/legal/
+servers:
+  - url: http://{deviceAddress}/ipcontrol/v1
+    description: >-
+      A Devialet device on the local network. `deviceAddress` is the IPv4 or IPv6 address (or
+      mDNS hostname) of any reachable Devialet device — that device becomes the "dispatcher"
+      and forwards commands to the rest of the installation. The default below is the example
+      address used in Devialet's reference documentation.
+    variables:
+      deviceAddress:
+        default: 192.168.1.20
+        description: IP address or mDNS hostname of a Devialet device on the local network.
+tags:
+  - name: Devices
+    description: Individual physical Devialet products on the local network, including accessories.
+  - name: Systems
+    description: Sets of one or more speakers that always share playback state (solo or stereo).
+  - name: Groups
+    description: Sets of one or more systems playing the same content in the multi-room configuration.
+  - name: Sound Control
+    description: Volume query and control at the system level.
+  - name: Audio Settings
+    description: Equalizer and night-mode settings, hosted by the system leader.
+  - name: Playback
+    description: Play, pause, mute, unmute, next, and previous on the group's current source.
+paths:
+  /devices/{deviceId}:
+    parameters:
+      - $ref: '#/components/parameters/DeviceId'
+    get:
+      operationId: getDevice
+      tags: [Devices]
+      summary: Get device information
+      description: >-
+        Query general information pertaining to the designated device — identifiers, model,
+        firmware version, serial number, role, and device name. Minimal firmware: DOS >= 2.14.
+        Also available as a NOTIFICATION channel in a future revision (subscriptions are not
+        yet implemented).
+      x-devialet-minimal-firmware: 'DOS >= 2.14'
+      responses:
+        '200':
+          description: Device information, or a regular error object.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Device'
+                  - $ref: '#/components/schemas/ErrorEnvelope'
+              examples:
+                accessory:
+                  summary: An Arch accessory (from the Devialet reference documentation)
+                  value:
+                    deviceId: f42cf307-f5bb-4311-a917-1e06d404f595
+                    model: Arch
+                    release:
+                      version: 2.14.2
+                    serial: P35V12345UX02
+                    deviceName: "      \U0001F4BF CD Player"
+                speaker:
+                  summary: A Phantom II speaker (from the Devialet reference documentation)
+                  value:
+                    deviceId: 5b35aa24-e4c9-4942-a501-7b0cf5c1e892
+                    systemId: 44a53d02-c69f-4a01-a0ce-1b6588b1d5b1
+                    groupId: 0e985d77-8212-4b48-842b-9e102d52887e
+                    model: Phantom II 98 dB
+                    release:
+                      version: 2.14.2
+                    role: Mono
+                    serial: P35V12345TQ9A
+                    deviceName: Kitchen
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /devices/{deviceId}/powerOff:
+    parameters:
+      - $ref: '#/components/parameters/DeviceId'
+    post:
+      operationId: powerOffDevice
+      tags: [Devices]
+      summary: Power off the device
+      description: >-
+        Turn off the designated device. Exiting OFF mode is only possible by pressing a
+        physical button on the device. Minimal firmware: DOS >= 2.16.
+      x-devialet-minimal-firmware: 'DOS >= 2.16'
+      requestBody:
+        $ref: '#/components/requestBodies/NoParameters'
+      responses:
+        '200':
+          $ref: '#/components/responses/EmptyOrError'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /devices/{deviceId}/restart:
+    parameters:
+      - $ref: '#/components/parameters/DeviceId'
+    post:
+      operationId: restartDevice
+      tags: [Devices]
+      summary: Restart the device
+      description: >-
+        Reboot the designated device. The device becomes unresponsive during the reboot.
+        Minimal firmware: DOS >= 2.16.
+      x-devialet-minimal-firmware: 'DOS >= 2.16'
+      requestBody:
+        $ref: '#/components/requestBodies/NoParameters'
+      responses:
+        '200':
+          $ref: '#/components/responses/EmptyOrError'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /devices/{deviceId}/resetToFactorySettings:
+    parameters:
+      - $ref: '#/components/parameters/DeviceId'
+    post:
+      operationId: resetDeviceToFactorySettings
+      tags: [Devices]
+      summary: Reset the device to factory settings
+      description: >-
+        Reset the designated device to factory settings and reboot it. This erases all network
+        credentials — unless the device is connected by Ethernet it becomes inaccessible. It
+        does not roll back the firmware version. Minimal firmware: DOS >= 2.16.
+      x-devialet-minimal-firmware: 'DOS >= 2.16'
+      requestBody:
+        $ref: '#/components/requestBodies/NoParameters'
+      responses:
+        '200':
+          $ref: '#/components/responses/EmptyOrError'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /systems/{systemId}:
+    parameters:
+      - $ref: '#/components/parameters/SystemId'
+    get:
+      operationId: getSystem
+      tags: [Systems]
+      summary: Get system information
+      description: >-
+        Query general information pertaining to the designated system. For non-speaker
+        accessories such as Dialog or Arch, use `getDevice` instead. Minimal firmware:
+        DOS >= 2.14 (DOS >= 2.16 for `availableFeatures`).
+      x-devialet-minimal-firmware: 'DOS >= 2.14'
+      responses:
+        '200':
+          description: System information, or a regular error object.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/System'
+                  - $ref: '#/components/schemas/ErrorEnvelope'
+              examples:
+                system:
+                  summary: From the Devialet reference documentation
+                  value:
+                    systemId: 13531594-b1c1-42c7-8d5a-18fa9e5d7cd4
+                    groupId: 0e985d77-8212-4b48-842b-9e102d52887e
+                    systemName: "Dining room \U0001F374"
+                    availableFeatures: [equalizer, nightMode]
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /systems/{systemId}/sources/current/soundControl/volume:
+    parameters:
+      - $ref: '#/components/parameters/SystemId'
+    get:
+      operationId: getSystemVolume
+      tags: [Sound Control, Systems]
+      summary: Get the current system volume
+      description: >-
+        Query the current volume of the designated system, in percent (0-100). All devices in
+        the same system share the same volume. Minimal firmware: DOS >= 2.14.
+      x-devialet-minimal-firmware: 'DOS >= 2.14'
+      responses:
+        '200':
+          description: The current volume, or a regular error object.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Volume'
+                  - $ref: '#/components/schemas/ErrorEnvelope'
+              examples:
+                volume:
+                  summary: From the Devialet reference documentation
+                  value:
+                    volume: 35
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    post:
+      operationId: setSystemVolume
+      tags: [Sound Control, Systems]
+      summary: Set the system volume
+      description: >-
+        Set the current volume of the designated system, in percent (0-100). All volume
+        commands unmute the current source but do not change `playingState`. Values outside
+        the range report the `InvalidValue` error code. Minimal firmware: DOS >= 2.14.
+      x-devialet-minimal-firmware: 'DOS >= 2.14'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Volume'
+            examples:
+              volume:
+                summary: From the Devialet reference documentation
+                value:
+                  volume: 35
+      responses:
+        '200':
+          $ref: '#/components/responses/EmptyOrError'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /systems/{systemId}/sources/current/soundControl/volumeUp:
+    parameters:
+      - $ref: '#/components/parameters/SystemId'
+    post:
+      operationId: systemVolumeUp
+      tags: [Sound Control, Systems]
+      summary: Increase the system volume by one step
+      description: >-
+        Increase the volume of the designated system by one non-configurable step of 5% of the
+        volume range. If the current volume is closer to 100% than the step, it is set to 100%;
+        if it is already 100% the request still succeeds. Minimal firmware: DOS >= 2.14.
+      x-devialet-minimal-firmware: 'DOS >= 2.14'
+      requestBody:
+        $ref: '#/components/requestBodies/NoParameters'
+      responses:
+        '200':
+          $ref: '#/components/responses/EmptyOrError'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /systems/{systemId}/sources/current/soundControl/volumeDown:
+    parameters:
+      - $ref: '#/components/parameters/SystemId'
+    post:
+      operationId: systemVolumeDown
+      tags: [Sound Control, Systems]
+      summary: Decrease the system volume by one step
+      description: >-
+        Decrease the volume of the designated system by one non-configurable step of 5% of the
+        volume range. If the current volume is closer to 0% than the step, it is set to 0%; if
+        it is already 0% the request still succeeds. Minimal firmware: DOS >= 2.14.
+      x-devialet-minimal-firmware: 'DOS >= 2.14'
+      requestBody:
+        $ref: '#/components/requestBodies/NoParameters'
+      responses:
+        '200':
+          $ref: '#/components/responses/EmptyOrError'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /systems/{systemId}/settings/audio/equalizer:
+    parameters:
+      - $ref: '#/components/parameters/SystemId'
+    get:
+      operationId: getSystemEqualizer
+      tags: [Audio Settings, Systems]
+      summary: Get the equalizer configuration
+      description: >-
+        Query the equalizer preset, current per-band equalization, stored custom equalization,
+        authorized gain range, and the list of available presets for the designated system.
+        Minimal firmware: DOS >= 2.16.
+      x-devialet-minimal-firmware: 'DOS >= 2.16'
+      responses:
+        '200':
+          description: The equalizer configuration, or a regular error object.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Equalizer'
+                  - $ref: '#/components/schemas/ErrorEnvelope'
+              examples:
+                equalizer:
+                  summary: From the Devialet reference documentation
+                  value:
+                    preset: flat
+                    currentEqualization:
+                      low: {frequency: 400, gain: 0}
+                      high: {frequency: 2000, gain: 0}
+                    customEqualization:
+                      low: {gain: -0.5}
+                      high: {gain: 2.25}
+                    gainRange: {min: -6, max: 6, stepPrecision: 1}
+                    availablePresets: [flat, custom, voice]
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    post:
+      operationId: setSystemEqualizer
+      tags: [Audio Settings, Systems]
+      summary: Set the equalizer preset and custom gains
+      description: >-
+        Select an equalizer preset and optionally update the stored custom per-band gains. Gains
+        are rounded to the nearest authorized multiple of `stepPrecision`; out-of-bounds values
+        report `InvalidValue`. `customEqualization` may be omitted, in which case the stored
+        custom gains are left unchanged. If the system leader is absent, `SystemLeaderAbsent` is
+        reported. If the parameters already match the current state the call succeeds.
+        Minimal firmware: DOS >= 2.16.
+      x-devialet-minimal-firmware: 'DOS >= 2.16'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EqualizerUpdate'
+            examples:
+              customPreset:
+                summary: Select the custom preset and set gains (Devialet reference documentation)
+                value:
+                  preset: custom
+                  customEqualization:
+                    low: {gain: 3.0}
+                    high: {gain: 3.0}
+              flatPreset:
+                summary: Select the flat preset (Devialet reference documentation)
+                value:
+                  preset: flat
+      responses:
+        '200':
+          $ref: '#/components/responses/EmptyOrError'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /systems/{systemId}/settings/audio/nightMode:
+    parameters:
+      - $ref: '#/components/parameters/SystemId'
+    get:
+      operationId: getSystemNightMode
+      tags: [Audio Settings, Systems]
+      summary: Get the night-mode setting
+      description: >-
+        Query the night-mode audio rendering setting for the designated system.
+        Minimal firmware: DOS >= 2.16.
+      x-devialet-minimal-firmware: 'DOS >= 2.16'
+      responses:
+        '200':
+          description: The night-mode setting, or a regular error object.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/NightMode'
+                  - $ref: '#/components/schemas/ErrorEnvelope'
+              examples:
+                nightMode:
+                  summary: From the Devialet reference documentation
+                  value:
+                    nightMode: 'on'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    post:
+      operationId: setSystemNightMode
+      tags: [Audio Settings, Systems]
+      summary: Set the night-mode setting
+      description: >-
+        Turn night-mode audio rendering on or off for the designated system. If the selection
+        already matches the current state the call succeeds. If the system leader is absent,
+        `SystemLeaderAbsent` is reported. Minimal firmware: DOS >= 2.16.
+      x-devialet-minimal-firmware: 'DOS >= 2.16'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NightMode'
+            examples:
+              on:
+                summary: From the Devialet reference documentation
+                value:
+                  nightMode: 'on'
+      responses:
+        '200':
+          $ref: '#/components/responses/EmptyOrError'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /systems/{systemId}/bluetooth/startAdvertising:
+    parameters:
+      - $ref: '#/components/parameters/SystemId'
+    post:
+      operationId: startSystemBluetoothAdvertising
+      tags: [Systems]
+      summary: Start Bluetooth advertising
+      description: >-
+        Make the designated system discoverable for Bluetooth pairing. Advertising turns off
+        automatically after one minute or on a successful Bluetooth connection; re-issuing the
+        command resets the timeout to one minute. If the advertising device cannot be reached by
+        the dispatcher, `UnreachableDevice` is reported. Minimal firmware: DOS >= 2.16.
+      x-devialet-minimal-firmware: 'DOS >= 2.16'
+      requestBody:
+        $ref: '#/components/requestBodies/NoParameters'
+      responses:
+        '200':
+          $ref: '#/components/responses/EmptyOrError'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /systems/{systemId}/powerOff:
+    parameters:
+      - $ref: '#/components/parameters/SystemId'
+    post:
+      operationId: powerOffSystem
+      tags: [Systems]
+      summary: Power off every device in the system
+      description: >-
+        Turn off all devices of the designated system. Exiting OFF mode is only possible by
+        pressing a physical button on each device. Minimal firmware: DOS >= 2.16.
+      x-devialet-minimal-firmware: 'DOS >= 2.16'
+      requestBody:
+        $ref: '#/components/requestBodies/NoParameters'
+      responses:
+        '200':
+          $ref: '#/components/responses/EmptyOrError'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /systems/{systemId}/restart:
+    parameters:
+      - $ref: '#/components/parameters/SystemId'
+    post:
+      operationId: restartSystem
+      tags: [Systems]
+      summary: Restart every device in the system
+      description: >-
+        Reboot all devices of the designated system. The devices become unresponsive during the
+        reboot. Minimal firmware: DOS >= 2.16.
+      x-devialet-minimal-firmware: 'DOS >= 2.16'
+      requestBody:
+        $ref: '#/components/requestBodies/NoParameters'
+      responses:
+        '200':
+          $ref: '#/components/responses/EmptyOrError'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /systems/{systemId}/resetToFactorySettings:
+    parameters:
+      - $ref: '#/components/parameters/SystemId'
+    post:
+      operationId: resetSystemToFactorySettings
+      tags: [Systems]
+      summary: Reset every device in the system to factory settings
+      description: >-
+        Reset all devices of the designated system to factory settings and reboot them. This
+        erases all network credentials — unless the devices are connected by Ethernet they
+        become inaccessible. It does not roll back the firmware version.
+        Minimal firmware: DOS >= 2.16.
+      x-devialet-minimal-firmware: 'DOS >= 2.16'
+      requestBody:
+        $ref: '#/components/requestBodies/NoParameters'
+      responses:
+        '200':
+          $ref: '#/components/responses/EmptyOrError'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /groups/{groupId}/sources:
+    parameters:
+      - $ref: '#/components/parameters/GroupId'
+    get:
+      operationId: listGroupSources
+      tags: [Groups]
+      summary: List available sources for the group
+      description: >-
+        Query the list of currently available audio sources for the designated group. The list
+        changes when the group is reconfigured in the Devialet companion app, when devices become
+        unreachable, or when an Arch physical input configuration changes. Minimal firmware:
+        DOS >= 2.14.
+      x-devialet-minimal-firmware: 'DOS >= 2.14'
+      responses:
+        '200':
+          description: The available sources, or a regular error object.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/SourceList'
+                  - $ref: '#/components/schemas/ErrorEnvelope'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /groups/{groupId}/sources/current:
+    parameters:
+      - $ref: '#/components/parameters/GroupId'
+    get:
+      operationId: getGroupCurrentSource
+      tags: [Groups, Playback]
+      summary: Get the current playback state for the group
+      description: >-
+        Query the current playback state of the designated group and the capabilities of its
+        current source — the source descriptor, `playingState`, `muteState`, track metadata when
+        the source provides it, and the list of currently available playback operations. If there
+        is no current source, `NoCurrentSource` is reported. Minimal firmware: DOS >= 2.14.
+      x-devialet-minimal-firmware: 'DOS >= 2.14'
+      responses:
+        '200':
+          description: The current playback state, or a regular error object.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/CurrentSourceState'
+                  - $ref: '#/components/schemas/ErrorEnvelope'
+              examples:
+                playing:
+                  summary: From the Devialet reference documentation
+                  value:
+                    source:
+                      sourceId: 213a3ed0-1fb9-4da2-bcf4-066da0f7b27e
+                      deviceId: 13531594-b1c1-42c7-8d5a-18fa9e5d7cd4
+                      type: spotifyconnect
+                    playingState: playing
+                    muteState: unmuted
+                    metadata:
+                      artist: Michael Jackson
+                      album: Thriller
+                      title: Billie Jean
+                      coverArtUrl: https://cdn.spotify.com/covers/4729028427.png
+                    availableOperations: [play, pause, seek]
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /groups/{groupId}/sources/{sourceId}/playback/play:
+    parameters:
+      - $ref: '#/components/parameters/GroupId'
+      - $ref: '#/components/parameters/SourceId'
+    post:
+      operationId: playGroupSource
+      tags: [Playback, Groups]
+      summary: Play or resume a source
+      description: >-
+        Start or resume playback of the designated source on the group and set its
+        `playingState` to `playing`. If the designated source is not the current source it is
+        selected first and the previous source is paused and unselected. The call may have
+        asynchronous effects — clients should re-read `getGroupCurrentSource` rather than trust
+        the response. If playback cannot start, `PlaybackNoStream` is reported and the source
+        still becomes current with no sound. If the source is already the current, playing
+        source, the call succeeds. Selecting an AirPlay 2 or Roon Ready source removes the host
+        system from its current group. Minimal firmware: DOS >= 2.14.
+      x-devialet-minimal-firmware: 'DOS >= 2.14'
+      requestBody:
+        $ref: '#/components/requestBodies/NoParameters'
+      responses:
+        '200':
+          $ref: '#/components/responses/EmptyOrError'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /groups/{groupId}/sources/current/playback/pause:
+    parameters:
+      - $ref: '#/components/parameters/GroupId'
+    post:
+      operationId: pauseGroupPlayback
+      tags: [Playback, Groups]
+      summary: Pause the current source
+      description: >-
+        Pause playback of the group's current source and set its `playingState` to `paused`. All
+        sources accept this command; sources that cannot semantically pause (for example
+        `optical`) mute the output instead, leaving `playingState` as `playing` and setting
+        `muteState` to `muted`. If already paused, the call succeeds. Minimal firmware:
+        DOS >= 2.14.
+      x-devialet-minimal-firmware: 'DOS >= 2.14'
+      requestBody:
+        $ref: '#/components/requestBodies/NoParameters'
+      responses:
+        '200':
+          $ref: '#/components/responses/EmptyOrError'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /groups/{groupId}/sources/current/playback/mute:
+    parameters:
+      - $ref: '#/components/parameters/GroupId'
+    post:
+      operationId: muteGroupPlayback
+      tags: [Playback, Groups]
+      summary: Mute the current source
+      description: >-
+        Mute playback of the group's current source and set its `muteState` to `muted`. Mute
+        state is independent of play/pause state. If already muted, the call succeeds. Minimal
+        firmware: DOS >= 2.14.
+      x-devialet-minimal-firmware: 'DOS >= 2.14'
+      requestBody:
+        $ref: '#/components/requestBodies/NoParameters'
+      responses:
+        '200':
+          $ref: '#/components/responses/EmptyOrError'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /groups/{groupId}/sources/current/playback/unmute:
+    parameters:
+      - $ref: '#/components/parameters/GroupId'
+    post:
+      operationId: unmuteGroupPlayback
+      tags: [Playback, Groups]
+      summary: Unmute the current source
+      description: >-
+        Unmute playback of the group's current source and set its `muteState` to `unmuted`. If
+        already unmuted, the call succeeds. Note that every volume command also unmutes the
+        current source. Minimal firmware: DOS >= 2.14.
+      x-devialet-minimal-firmware: 'DOS >= 2.14'
+      requestBody:
+        $ref: '#/components/requestBodies/NoParameters'
+      responses:
+        '200':
+          $ref: '#/components/responses/EmptyOrError'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /groups/{groupId}/sources/current/playback/next:
+    parameters:
+      - $ref: '#/components/parameters/GroupId'
+    post:
+      operationId: nextGroupTrack
+      tags: [Playback, Groups]
+      summary: Skip to the next track
+      description: >-
+        Start playback of the next track on the group's current source. If the current source does
+        not offer the next operation, `PlaybackOperationNotAvailable` is reported — check
+        `availableOperations` from `getGroupCurrentSource` first. Minimal firmware: DOS >= 2.14.
+      x-devialet-minimal-firmware: 'DOS >= 2.14'
+      requestBody:
+        $ref: '#/components/requestBodies/NoParameters'
+      responses:
+        '200':
+          $ref: '#/components/responses/EmptyOrError'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /groups/{groupId}/sources/current/playback/previous:
+    parameters:
+      - $ref: '#/components/parameters/GroupId'
+    post:
+      operationId: previousGroupTrack
+      tags: [Playback, Groups]
+      summary: Skip to the previous track
+      description: >-
+        Start playback of the previous track on the group's current source. If the current source
+        does not offer the previous operation, `PlaybackOperationNotAvailable` is reported.
+        "Restart the current track" behaviour is not supported by this endpoint and must be
+        implemented client-side. Minimal firmware: DOS >= 2.14.
+      x-devialet-minimal-firmware: 'DOS >= 2.14'
+      requestBody:
+        $ref: '#/components/requestBodies/NoParameters'
+      responses:
+        '200':
+          $ref: '#/components/responses/EmptyOrError'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
+        '500':
+          $ref: '#/components/responses/InternalError'
+components:
+  parameters:
+    DeviceId:
+      name: deviceId
+      in: path
+      required: true
+      description: >-
+        Device identifier. The only value supported today is `current`, which refers to the
+        dispatcher — the device that received the request.
+      schema:
+        type: string
+        default: current
+        examples: [current]
+    SystemId:
+      name: systemId
+      in: path
+      required: true
+      description: >-
+        System identifier. The only value supported today is `current`, which refers to the
+        system of the dispatcher.
+      schema:
+        type: string
+        default: current
+        examples: [current]
+    GroupId:
+      name: groupId
+      in: path
+      required: true
+      description: >-
+        Group identifier. The only value supported today is `current`, which refers to the group
+        of the dispatcher.
+      schema:
+        type: string
+        default: current
+        examples: [current]
+    SourceId:
+      name: sourceId
+      in: path
+      required: true
+      description: >-
+        Source identifier in UUIDv4 format, as returned by `listGroupSources`. An unrecognised
+        value results in a 200 response carrying a regular error object, not a 404.
+      schema:
+        type: string
+        examples: [213a3ed0-1fb9-4da2-bcf4-066da0f7b27e]
+  requestBodies:
+    NoParameters:
+      required: false
+      description: >-
+        This command takes no parameters. The body may be empty or an empty JSON object (`{}`),
+        but the `Content-Type: application/json` header is mandatory.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/EmptyObject'
+          examples:
+            empty:
+              value: {}
+  responses:
+    EmptyOrError:
+      description: >-
+        Success (an empty JSON object) or a regular error. Devialet returns regular errors with
+        HTTP status 200 and an `error` object in the body.
+      content:
+        application/json:
+          schema:
+            oneOf:
+              - $ref: '#/components/schemas/EmptyObject'
+              - $ref: '#/components/schemas/ErrorEnvelope'
+          examples:
+            success:
+              summary: Successful command
+              value: {}
+            regularError:
+              summary: Regular error returned with HTTP 200
+              value:
+                error:
+                  code: UnreachableDevices
+    BadRequest:
+      description: Malformed JSON request. The message body is empty.
+    NotFound:
+      description: >-
+        Non-existing endpoint — for example a `/systems/...` or `/groups/...` request performed
+        against a non-speaker accessory. The message body is empty.
+    UnsupportedMediaType:
+      description: >-
+        Invalid or missing `Content-Type` header on a POST request. The only allowed value is
+        `application/json`.
+    InternalError:
+      description: >-
+        Unexpected internal error. The body, when present, follows the regular error format, but
+        its content is not part of the officially supported API.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+  schemas:
+    EmptyObject:
+      type: object
+      description: An empty JSON object.
+      additionalProperties: false
+    ErrorEnvelope:
+      type: object
+      description: >-
+        The regular error envelope. Returned with HTTP status 200 for application-level errors,
+        and with 500 for unexpected internal errors.
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code]
+          properties:
+            code:
+              type: string
+              description: >-
+                A predefined error identifier. Unknown codes must be handled gracefully by the
+                client and shown as a generic error message.
+              examples: [Error, UnreachableDevices, Timeout, NoCurrentSource, InvalidValue]
+            details:
+              type: object
+              description: >-
+                Structured data whose shape depends on the error identifier, for building a
+                localized user-facing message.
+              additionalProperties: true
+            message:
+              type: string
+              description: >-
+                Debug-only text. Not intended for display to end users or for programmatic
+                processing.
+    Device:
+      type: object
+      description: A physically separate Devialet product connected to the local network.
+      required: [deviceId, model, release, serial, deviceName]
+      properties:
+        deviceId:
+          type: string
+          description: Unique device identifier in UUIDv4 format.
+        systemId:
+          type: string
+          description: >-
+            Unique identifier of the system the device belongs to, in UUIDv4 format. Present for
+            speakers only — accessories such as Arch or Dialog belong to no system.
+        groupId:
+          type: string
+          description: >-
+            Unique identifier of the group the device belongs to (via its system), in UUIDv4
+            format. Present for speakers only.
+        model:
+          type: string
+          description: >-
+            Human-readable model name. The language is English but non-ASCII characters may be
+            present (for example "Phantom I Opéra de Paris").
+        release:
+          type: object
+          description: Firmware release information.
+          required: [version]
+          properties:
+            version:
+              type: string
+              description: >-
+                Human-readable firmware version, usually MAJOR.MINOR.PATCH but may carry
+                additional non-numerical information. ASCII only.
+        serial:
+          type: string
+          description: Device serial number, usually 13 ASCII characters.
+        role:
+          type: string
+          description: The device's role in its system. Present for speakers only.
+          enum: [FrontLeft, FrontRight, Mono]
+        deviceName:
+          type: string
+          description: >-
+            Human-readable non-empty UTF-8 name, typically describing the physical location of
+            the speaker system or the source device of an accessory.
+    System:
+      type: object
+      description: A set of one or more speakers that always share playback state.
+      required: [systemId, groupId, systemName]
+      properties:
+        systemId:
+          type: string
+          description: Unique system identifier in UUIDv4 format.
+        groupId:
+          type: string
+          description: Unique identifier of the group this system belongs to, in UUIDv4 format.
+        systemName:
+          type: string
+          description: >-
+            Human-readable non-empty UTF-8 name, typically describing the physical location of
+            the speaker system.
+        availableFeatures:
+          type: array
+          description: Features available on this system. Requires DOS >= 2.16.
+          items:
+            type: string
+            enum: [equalizer, nightMode]
+    Volume:
+      type: object
+      description: The volume of a system, in percent.
+      required: [volume]
+      properties:
+        volume:
+          type: integer
+          minimum: 0
+          maximum: 100
+          description: Current volume of the system, in percent.
+    NightMode:
+      type: object
+      description: The night-mode audio rendering selection.
+      required: [nightMode]
+      properties:
+        nightMode:
+          type: string
+          enum: ['on', 'off']
+          description: Night-mode selection.
+    EqualizationBand:
+      type: object
+      description: >-
+        Per-band equalization. Band labels vary by system; documented examples are `low` and
+        `high`.
+      required: [gain]
+      properties:
+        frequency:
+          type: integer
+          description: >-
+            User-facing central frequency for the band, in hertz. May be rounded, and may be
+            absent.
+        gain:
+          type: number
+          description: Positive or negative gain for the band, in steps. May be fractional.
+    CustomEqualizationBand:
+      type: object
+      description: Per-band gain stored for the `custom` preset.
+      required: [gain]
+      properties:
+        gain:
+          type: number
+          description: >-
+            Positive or negative gain in steps. Rounded by the device to the nearest multiple of
+            `gainRange.stepPrecision`; out-of-bounds values report `InvalidValue`.
+    Equalizer:
+      type: object
+      description: The equalizer configuration of a system.
+      properties:
+        enabled:
+          type: boolean
+          description: >-
+            Read-only. Indicates whether the equalizer is currently active. It can be inactive in
+            certain audio processing modes, in which case settings can still be changed but have
+            no audible effect.
+        preset:
+          type: string
+          description: The selected equalizer preset.
+          enum: [flat, custom, voice]
+        currentEqualization:
+          type: object
+          description: >-
+            Gains and frequencies for all bands under the currently selected preset, keyed by
+            band label.
+          additionalProperties:
+            $ref: '#/components/schemas/EqualizationBand'
+        customEqualization:
+          type: object
+          description: >-
+            Stored gains for all bands under the `custom` preset, keyed by band label. These can
+            be modified at any time, independently of the selected preset.
+          additionalProperties:
+            $ref: '#/components/schemas/CustomEqualizationBand'
+        gainRange:
+          type: object
+          description: The authorized gain range and rounding precision for the `custom` preset.
+          properties:
+            min:
+              type: number
+              description: Minimal authorized gain, in steps. Applies to all bands.
+            max:
+              type: number
+              description: Maximal authorized gain, in steps. Applies to all bands.
+            stepPrecision:
+              type: number
+              description: >-
+                Rounding precision, in arbitrary units. Gains are rounded to the nearest multiple.
+                Typical values are 0.1, 0.25, 0.5, and 1.
+        availablePresets:
+          type: array
+          description: The full list of equalizer presets available on this system.
+          items:
+            type: string
+    EqualizerUpdate:
+      type: object
+      description: >-
+        Equalizer change request. `enabled`, `currentEqualization`, `gainRange`, and
+        `availablePresets` are GET-only and are ignored if sent.
+      properties:
+        preset:
+          type: string
+          enum: [flat, custom, voice]
+          description: The equalizer preset to select.
+        customEqualization:
+          type: object
+          description: >-
+            Optional. Stored gains for the `custom` preset, keyed by band label. Bands may be sent
+            together (applied simultaneously) or one by one. Omitting this leaves the stored
+            custom gains unchanged.
+          additionalProperties:
+            $ref: '#/components/schemas/CustomEqualizationBand'
+    Source:
+      type: object
+      description: An audio source hosted by a device in the installation.
+      required: [sourceId, deviceId, type]
+      properties:
+        sourceId:
+          type: string
+          description: Unique source identifier in UUIDv4 format.
+        deviceId:
+          type: string
+          description: >-
+            Unique identifier of the host device in UUIDv4 format. May be a speaker or an
+            accessory such as Dialog or Arch. For stereo pairs, use this to distinguish left from
+            right inputs.
+        type:
+          type: string
+          description: >-
+            The source type. Physical sources are `phono`, `line`, `digital_left`,
+            `digital_right` (Arch only), `optical` (Phantom I, Dialog), and `opticaljack`
+            (Phantom II only). Non-physical sources are `spotifyconnect`, `airplay2`,
+            `bluetooth`, `upnp`, and `raat`.
+          enum:
+            - phono
+            - line
+            - digital_left
+            - digital_right
+            - optical
+            - opticaljack
+            - spotifyconnect
+            - airplay2
+            - bluetooth
+            - upnp
+            - raat
+    SourceList:
+      type: object
+      description: The sources currently available to a group.
+      required: [sources]
+      properties:
+        sources:
+          type: array
+          items:
+            $ref: '#/components/schemas/Source'
+    TrackMetadata:
+      type: object
+      description: >-
+        Metadata for the current track. Absent when the source provides none; retained while the
+        source is paused. All strings are UTF-8.
+      properties:
+        artist:
+          type: string
+          description: Artist name. Always present, but may be an empty string.
+        album:
+          type: string
+          description: Album name. Always present, but may be an empty string.
+        title:
+          type: string
+          description: Track name. Always present, but may be an empty string.
+        coverArtUrl:
+          type: string
+          format: uri
+          description: >-
+            URL from which the client can download the cover art image. Absent when the data are
+            not available as a URL.
+    CurrentSourceState:
+      type: object
+      description: The current playback state of a group and the capabilities of its current source.
+      required: [playingState, muteState, availableOperations]
+      properties:
+        source:
+          $ref: '#/components/schemas/Source'
+        playingState:
+          type: string
+          enum: [playing, paused]
+          description: >-
+            Playback state. Independent of `muteState` — all four combinations are possible.
+        muteState:
+          type: string
+          enum: [muted, unmuted]
+          description: Mute state. Independent of `playingState`.
+        metadata:
+          $ref: '#/components/schemas/TrackMetadata'
+        availableOperations:
+          type: array
+          description: >-
+            Operations currently available on the current source. `mute` and `unmute` are always
+            available and are never listed here. The list can change without the source changing.
+          items:
+            type: string
+            enum: [play, pause, next, previous, seek]

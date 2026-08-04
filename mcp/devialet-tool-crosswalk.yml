@@ -1,0 +1,101 @@
+generated: '2026-08-04'
+method: derived
+source: mcp/devialet-mcp.yml
+also_derived_from: openapi/devialet-ip-control-openapi.yml
+status: candidate
+note: >-
+  Devialet publishes no MCP server. The tool side of this crosswalk is the candidate surface
+  derived in mcp/devialet-mcp.yml, so every binding is 1:1 with a documented OpenAPI operation and
+  confidence is high by construction. There is no divergence to record because there is no
+  independently-designed tool surface to diverge from. This file exists to make the agent-facing
+  tool a first-class unit bound to the machine-readable contract, and to be re-derived honestly if
+  Devialet or a third party ever ships a real server.
+surfaces:
+  openapi:
+    file: openapi/devialet-ip-control-openapi.yml
+    operations: 25
+    gated: false
+    note: >-
+      Derived by API Evangelist from Devialet's PDF reference. Devialet publishes no
+      machine-readable spec.
+  graphql:
+    endpoint: null
+    present: false
+  mcp:
+    url: null
+    present: false
+    status: candidate
+    gated: false
+    note: >-
+      No server exists, so tools/list could not be probed. Tool names and input contracts come from
+      the candidate mapping, not from a live introspection.
+crosswalk:
+  - {tool: get_device, category: discovery, rest: [getDevice], binding: rest, confidence: high}
+  - {tool: get_system, category: discovery, rest: [getSystem], binding: rest, confidence: high}
+  - {tool: list_group_sources, category: discovery, rest: [listGroupSources], binding: rest, confidence: high}
+  - {tool: get_group_current_source, category: playback, rest: [getGroupCurrentSource], binding: rest, confidence: high}
+  - {tool: get_system_volume, category: sound, rest: [getSystemVolume], binding: rest, confidence: high}
+  - {tool: set_system_volume, category: sound, rest: [setSystemVolume], binding: rest, confidence: high}
+  - {tool: system_volume_up, category: sound, rest: [systemVolumeUp], binding: rest, confidence: high}
+  - {tool: system_volume_down, category: sound, rest: [systemVolumeDown], binding: rest, confidence: high}
+  - {tool: get_system_equalizer, category: audio_settings, rest: [getSystemEqualizer], binding: rest, confidence: high}
+  - {tool: set_system_equalizer, category: audio_settings, rest: [setSystemEqualizer], binding: rest, confidence: high}
+  - {tool: get_system_night_mode, category: audio_settings, rest: [getSystemNightMode], binding: rest, confidence: high}
+  - {tool: set_system_night_mode, category: audio_settings, rest: [setSystemNightMode], binding: rest, confidence: high}
+  - {tool: play_group_source, category: playback, rest: [playGroupSource], binding: rest, confidence: high,
+     note: 'Asynchronous — the tool must re-read getGroupCurrentSource to confirm playingState.'}
+  - {tool: pause_group_playback, category: playback, rest: [pauseGroupPlayback], binding: rest, confidence: high}
+  - {tool: mute_group_playback, category: playback, rest: [muteGroupPlayback], binding: rest, confidence: high}
+  - {tool: unmute_group_playback, category: playback, rest: [unmuteGroupPlayback], binding: rest, confidence: high}
+  - {tool: next_group_track, category: playback, rest: [nextGroupTrack], binding: rest, confidence: high,
+     note: 'Gate on availableOperations from getGroupCurrentSource; not idempotent.'}
+  - {tool: previous_group_track, category: playback, rest: [previousGroupTrack], binding: rest, confidence: high,
+     note: 'Gate on availableOperations from getGroupCurrentSource; not idempotent.'}
+  - {tool: start_system_bluetooth_advertising, category: pairing, rest: [startSystemBluetoothAdvertising], binding: rest, confidence: high}
+  - {tool: power_off_device, category: power, rest: [powerOffDevice], binding: rest, confidence: high}
+  - {tool: restart_device, category: power, rest: [restartDevice], binding: rest, confidence: high}
+  - {tool: reset_device_to_factory_settings, category: power, rest: [resetDeviceToFactorySettings], binding: rest, confidence: high}
+  - {tool: power_off_system, category: power, rest: [powerOffSystem], binding: rest, confidence: high}
+  - {tool: restart_system, category: power, rest: [restartSystem], binding: rest, confidence: high}
+  - {tool: reset_system_to_factory_settings, category: power, rest: [resetSystemToFactorySettings], binding: rest, confidence: high}
+mcp_only: []
+rest_only: []
+unbindable:
+  description: >-
+    Capabilities an agent needs that no documented REST operation provides. These are real gaps in
+    the API surface, not mapping failures.
+  items:
+    - capability: power on a device
+      reason: >-
+        No endpoint exists. Devialet documents that exiting OFF mode requires pressing a physical
+        button on the device. powerOffDevice and powerOffSystem are therefore one-way over the
+        network.
+    - capability: subscribe to state changes
+      reason: >-
+        'Asynchronous access to the information (notifications) is not available yet.' Several
+        endpoints are annotated NOTIFICATION as a reservation, but Revision 1 ships no event
+        channel. Agents must poll.
+    - capability: seek within a track
+      reason: >-
+        `seek` appears in availableOperations on getGroupCurrentSource, but no seek endpoint is
+        specified in Revision 1. The reference also names
+        /groups/{groupId}/sources/current/playback/position in its polling list without specifying
+        it. See referenced_but_unspecified in conventions/devialet-conventions.yml.
+    - capability: change group or system membership
+      reason: >-
+        Grouping and stereo pairing are configured in the Devialet companion app only. The API
+        reads groupId and systemId but cannot set them.
+    - capability: select an Arch physical input
+      reason: Arch input configuration is companion-app only; the API only observes the result.
+    - capability: discover devices
+      reason: >-
+        Discovery is mDNS/DNS-SD, not an HTTP operation. An MCP server must implement it out of
+        band before any tool can be called.
+coverage:
+  tools_named: 25
+  tools_bound: 25
+  mcp_only: 0
+  rest_ops_total: 25
+  rest_ops_with_tool: 25
+  binding_rate: 1.0
+  unbindable_capabilities: 6

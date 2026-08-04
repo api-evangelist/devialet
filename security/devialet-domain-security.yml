@@ -1,0 +1,23 @@
+generated: '2026-08-04'
+method: probed
+source: live DNS/TLS/HTTP probes of apis.yml + OpenAPI hosts
+hosts:
+- host: www.devialet.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Oct  2 11:47:14 2026 GMT
+  hsts: null
+- host: help.devialet.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Sep  9 23:39:06 2026 GMT
+  hsts: null
+- host: 192.168.1.20
+  https: false
+domains:
+- domain: devialet.com
+  dnssec: true
+  caa: []
+  spf: true
+  dmarc: true
+  dmarc_policy: reject

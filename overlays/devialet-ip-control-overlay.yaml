@@ -1,0 +1,123 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the Devialet IP Control API
+  version: 1.0.0
+extends: openapi/devialet-ip-control-openapi.yml
+x-provenance:
+  generated: '2026-08-04'
+  method: generated
+  source: openapi/_original/devialet-ip-control-r1.pdf
+  note: >-
+    Devialet publishes no machine-readable specification, so the base document
+    openapi/devialet-ip-control-openapi.yml is itself an API Evangelist transcription of Devialet's
+    PDF reference. This overlay carries the API Evangelist annotations layered on top of that
+    transcription — provenance, agent-facing safety classification, and cross-links to the derived
+    artifacts in this repo — so the transcription stays a faithful reading of the source document
+    and our editorial additions stay separable from it.
+actions:
+  - target: $.info
+    description: Record provenance and cross-link the derived artifacts in this repository.
+    update:
+      x-apievangelist-profile: https://apievangelist.com/
+      x-apievangelist-artifacts:
+        authentication: authentication/devialet-authentication.yml
+        errors: errors/devialet-error-codes.yml
+        conventions: conventions/devialet-conventions.yml
+        lifecycle: lifecycle/devialet-lifecycle.yml
+        changelog: changelog/devialet-changelog.yml
+        conformance: conformance/devialet-conformance.yml
+        data_model: data-model/devialet-data-model.yml
+        examples: examples/devialet-ip-control-examples.yml
+        packages: packages/devialet-packages.yml
+        mcp: mcp/devialet-mcp.yml
+        tool_crosswalk: mcp/devialet-tool-crosswalk.yml
+        skills: skills/_index.yml
+        llms_txt: llms/devialet-llms.txt
+      x-apievangelist-source-document: >-
+        Devialet IP Control — REFERENCE API DOCUMENTATION, Revision 1, December 2021
+      x-apievangelist-authored-by: API Evangelist (not published or endorsed by Devialet)
+  - target: $.info
+    description: Flag the unauthenticated posture at the document level.
+    update:
+      x-apievangelist-security-posture:
+        authentication: none
+        transport: http
+        tls: false
+        boundary: local network only
+        implication: >-
+          Any client that can reach the device on the LAN can issue every command, including
+          irreversible ones. Network segmentation is the only control.
+  - target: $.info
+    description: Record the error-handling deviation that most affects client and agent correctness.
+    update:
+      x-apievangelist-error-model:
+        style: envelope-in-200
+        warning: >-
+          Application errors are returned with HTTP status 200 and an `error` object in the body.
+          Testing only the HTTP status will silently treat failures as successes. Clients MUST
+          inspect the 200 body for an `error` key.
+  - target: $.paths['/devices/{deviceId}/resetToFactorySettings'].post
+    description: Mark the irreversible device-level factory reset.
+    update:
+      x-apievangelist-consequence: irreversible
+      x-apievangelist-agent-guidance: >-
+        Erases network credentials. On a Wi-Fi-only deployment the device becomes unreachable and
+        cannot be recovered over the network. Require explicit human confirmation before calling.
+  - target: $.paths['/systems/{systemId}/resetToFactorySettings'].post
+    description: Mark the irreversible system-wide factory reset.
+    update:
+      x-apievangelist-consequence: irreversible
+      x-apievangelist-agent-guidance: >-
+        Applies to every device in the system. Erases network credentials on all of them. Require
+        explicit human confirmation before calling.
+  - target: $.paths['/devices/{deviceId}/powerOff'].post
+    description: Mark power-off as physically unrecoverable over the network.
+    update:
+      x-apievangelist-consequence: physical
+      x-apievangelist-agent-guidance: >-
+        There is no power-on endpoint. Exiting OFF mode requires pressing a physical button on the
+        device, so this command cannot be undone remotely.
+  - target: $.paths['/systems/{systemId}/powerOff'].post
+    description: Mark system power-off as physically unrecoverable over the network.
+    update:
+      x-apievangelist-consequence: physical
+      x-apievangelist-agent-guidance: >-
+        There is no power-on endpoint. Every device in the system must be restarted by pressing its
+        physical button.
+  - target: $.paths['/groups/{groupId}/sources/current/playback/next'].post
+    description: Flag the non-idempotent playback advance.
+    update:
+      x-apievangelist-idempotent: false
+      x-apievangelist-agent-guidance: >-
+        Advances the playlist. Do not retry blindly after a timeout — re-read
+        getGroupCurrentSource first. Check availableOperations before calling at all.
+  - target: $.paths['/groups/{groupId}/sources/current/playback/previous'].post
+    description: Flag the non-idempotent playback rewind.
+    update:
+      x-apievangelist-idempotent: false
+      x-apievangelist-agent-guidance: >-
+        Moves the playlist backwards. Do not retry blindly after a timeout. Check
+        availableOperations before calling.
+  - target: $.paths['/systems/{systemId}/sources/current/soundControl/volumeUp'].post
+    description: Flag the relative volume step as non-idempotent away from the boundary.
+    update:
+      x-apievangelist-idempotent: false
+      x-apievangelist-agent-guidance: >-
+        Relative +5% step. Repeat-safe only at 100%. For retry-safe volume changes use
+        setSystemVolume with an absolute value.
+  - target: $.paths['/systems/{systemId}/sources/current/soundControl/volumeDown'].post
+    description: Flag the relative volume step as non-idempotent away from the boundary.
+    update:
+      x-apievangelist-idempotent: false
+      x-apievangelist-agent-guidance: >-
+        Relative -5% step. Repeat-safe only at 0%. For retry-safe volume changes use
+        setSystemVolume with an absolute value.
+  - target: $.paths['/groups/{groupId}/sources/{sourceId}/playback/play'].post
+    description: Flag the asynchronous completion semantics.
+    update:
+      x-apievangelist-async-effects: true
+      x-apievangelist-idempotent: true
+      x-apievangelist-agent-guidance: >-
+        A reported success does not mean playback started. Re-read getGroupCurrentSource and check
+        playingState. A delayed failure produces no notification. Selecting an AirPlay 2 or Roon
+        Ready source restructures group membership and can change groupId.
