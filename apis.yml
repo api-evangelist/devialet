@@ -41,37 +41,20 @@ x-enrichment:
   artifacts_added: 23
   pass: local-v1
 apis:
-- name: Devialet IP Control API
-  description: >-
-    Local-network HTTP control API served by Devialet devices themselves. Starting with DOS 2.14
-    firmware, Phantom I, Phantom II, Arch, and Dialog expose device, system, and group state plus
-    playback, volume, equalizer, night-mode, Bluetooth advertising, and power, restart, and
-    factory-reset commands over plain HTTP on port 80 under the /ipcontrol/v1 prefix. Devices are
-    discovered with mDNS/DNS-SD (_http._tcp, TXT keys manufacturer=Devialet and
-    ipControlVersion=1). No authentication is required. GET queries are guaranteed side-effect
-    free; POST commands require a Content-Type of application/json. Application-level errors are
-    returned inside an HTTP 200 response as an error object rather than as an HTTP error status.
-  humanURL: https://help.devialet.com/hc/en-us/articles/4415207423378-Phantom-s-documentation-for-piloting-them-via-IP
+- aid: devialet:devialet-audio-settings-api
+  name: Devialet Audio Settings API
+  description: Equalizer and night-mode settings, hosted by the system leader.
+  humanURL: >-
+    https://help.devialet.com/hc/en-us/articles/4415207423378-Phantom-s-documentation-for-piloting-them-via-IP
   baseURL: http://192.168.1.20/ipcontrol/v1
-  x-deployment: local-network
-  x-base-url-note: >-
-    This API has no internet-facing host. It is served by the customer's own device on the local
-    network, so the base URL is per-device. The value above is the example address used in
-    Devialet's own reference documentation; production clients resolve the real address via
-    mDNS/DNS-SD and read the path prefix from the service TXT record.
   tags:
-  - Audio
-  - Smart Speakers
-  - Home Automation
-  - Custom Installation
-  - Device Control
-  - Local Network API
-  - Playback Control
+  - Audio Settings
   properties:
   - type: OpenAPI
-    url: openapi/devialet-ip-control-openapi.yml
+    url: openapi/devialet-audio-settings-api-openapi.yml
   - type: Documentation
-    url: https://help.devialet.com/hc/en-us/articles/4415207423378-Phantom-s-documentation-for-piloting-them-via-IP
+    url: >-
+      https://help.devialet.com/hc/en-us/articles/4415207423378-Phantom-s-documentation-for-piloting-them-via-IP
   - type: APIReference
     url: openapi/_original/devialet-ip-control-r1.pdf
   - type: Authentication
@@ -88,14 +71,168 @@ apis:
     url: data-model/devialet-data-model.yml
   - type: Examples
     url: examples/devialet-ip-control-examples.yml
-  - type: Overlay
-    url: overlays/devialet-ip-control-overlay.yaml
-  - type: MCPServer
-    url: mcp/devialet-mcp.yml
   - type: ToolCrosswalk
     url: mcp/devialet-tool-crosswalk.yml
-  - type: AgentSkill
-    url: skills/_index.yml
+- aid: devialet:devialet-devices-api
+  name: Devialet Devices API
+  description: Individual physical Devialet products on the local network, including accessories.
+  humanURL: >-
+    https://help.devialet.com/hc/en-us/articles/4415207423378-Phantom-s-documentation-for-piloting-them-via-IP
+  baseURL: http://192.168.1.20/ipcontrol/v1
+  tags:
+  - Devices
+  properties:
+  - type: OpenAPI
+    url: openapi/devialet-devices-api-openapi.yml
+  - type: Documentation
+    url: >-
+      https://help.devialet.com/hc/en-us/articles/4415207423378-Phantom-s-documentation-for-piloting-them-via-IP
+  - type: APIReference
+    url: openapi/_original/devialet-ip-control-r1.pdf
+  - type: Authentication
+    url: authentication/devialet-authentication.yml
+  - type: ErrorCatalog
+    url: errors/devialet-error-codes.yml
+  - type: Conventions
+    url: conventions/devialet-conventions.yml
+  - type: Idempotency
+    url: conventions/devialet-conventions.yml
+  - type: Lifecycle
+    url: lifecycle/devialet-lifecycle.yml
+  - type: DataModel
+    url: data-model/devialet-data-model.yml
+  - type: Examples
+    url: examples/devialet-ip-control-examples.yml
+  - type: ToolCrosswalk
+    url: mcp/devialet-tool-crosswalk.yml
+- aid: devialet:devialet-groups-api
+  name: Devialet Groups API
+  description: Sets of one or more systems playing the same content in the multi-room configuration.
+  humanURL: >-
+    https://help.devialet.com/hc/en-us/articles/4415207423378-Phantom-s-documentation-for-piloting-them-via-IP
+  baseURL: http://192.168.1.20/ipcontrol/v1
+  tags:
+  - Groups
+  properties:
+  - type: OpenAPI
+    url: openapi/devialet-groups-api-openapi.yml
+  - type: Documentation
+    url: >-
+      https://help.devialet.com/hc/en-us/articles/4415207423378-Phantom-s-documentation-for-piloting-them-via-IP
+  - type: APIReference
+    url: openapi/_original/devialet-ip-control-r1.pdf
+  - type: Authentication
+    url: authentication/devialet-authentication.yml
+  - type: ErrorCatalog
+    url: errors/devialet-error-codes.yml
+  - type: Conventions
+    url: conventions/devialet-conventions.yml
+  - type: Idempotency
+    url: conventions/devialet-conventions.yml
+  - type: Lifecycle
+    url: lifecycle/devialet-lifecycle.yml
+  - type: DataModel
+    url: data-model/devialet-data-model.yml
+  - type: Examples
+    url: examples/devialet-ip-control-examples.yml
+  - type: ToolCrosswalk
+    url: mcp/devialet-tool-crosswalk.yml
+- aid: devialet:devialet-playback-api
+  name: Devialet Playback API
+  description: Play, pause, mute, unmute, next, and previous on the group's current source.
+  humanURL: >-
+    https://help.devialet.com/hc/en-us/articles/4415207423378-Phantom-s-documentation-for-piloting-them-via-IP
+  baseURL: http://192.168.1.20/ipcontrol/v1
+  tags:
+  - Playback
+  properties:
+  - type: OpenAPI
+    url: openapi/devialet-playback-api-openapi.yml
+  - type: Documentation
+    url: >-
+      https://help.devialet.com/hc/en-us/articles/4415207423378-Phantom-s-documentation-for-piloting-them-via-IP
+  - type: APIReference
+    url: openapi/_original/devialet-ip-control-r1.pdf
+  - type: Authentication
+    url: authentication/devialet-authentication.yml
+  - type: ErrorCatalog
+    url: errors/devialet-error-codes.yml
+  - type: Conventions
+    url: conventions/devialet-conventions.yml
+  - type: Idempotency
+    url: conventions/devialet-conventions.yml
+  - type: Lifecycle
+    url: lifecycle/devialet-lifecycle.yml
+  - type: DataModel
+    url: data-model/devialet-data-model.yml
+  - type: Examples
+    url: examples/devialet-ip-control-examples.yml
+  - type: ToolCrosswalk
+    url: mcp/devialet-tool-crosswalk.yml
+- aid: devialet:devialet-sound-control-api
+  name: Devialet Sound Control API
+  description: Volume query and control at the system level.
+  humanURL: >-
+    https://help.devialet.com/hc/en-us/articles/4415207423378-Phantom-s-documentation-for-piloting-them-via-IP
+  baseURL: http://192.168.1.20/ipcontrol/v1
+  tags:
+  - Sound Control
+  properties:
+  - type: OpenAPI
+    url: openapi/devialet-sound-control-api-openapi.yml
+  - type: Documentation
+    url: >-
+      https://help.devialet.com/hc/en-us/articles/4415207423378-Phantom-s-documentation-for-piloting-them-via-IP
+  - type: APIReference
+    url: openapi/_original/devialet-ip-control-r1.pdf
+  - type: Authentication
+    url: authentication/devialet-authentication.yml
+  - type: ErrorCatalog
+    url: errors/devialet-error-codes.yml
+  - type: Conventions
+    url: conventions/devialet-conventions.yml
+  - type: Idempotency
+    url: conventions/devialet-conventions.yml
+  - type: Lifecycle
+    url: lifecycle/devialet-lifecycle.yml
+  - type: DataModel
+    url: data-model/devialet-data-model.yml
+  - type: Examples
+    url: examples/devialet-ip-control-examples.yml
+  - type: ToolCrosswalk
+    url: mcp/devialet-tool-crosswalk.yml
+- aid: devialet:devialet-systems-api
+  name: Devialet Systems API
+  description: Sets of one or more speakers that always share playback state (solo or stereo).
+  humanURL: >-
+    https://help.devialet.com/hc/en-us/articles/4415207423378-Phantom-s-documentation-for-piloting-them-via-IP
+  baseURL: http://192.168.1.20/ipcontrol/v1
+  tags:
+  - Systems
+  properties:
+  - type: OpenAPI
+    url: openapi/devialet-systems-api-openapi.yml
+  - type: Documentation
+    url: >-
+      https://help.devialet.com/hc/en-us/articles/4415207423378-Phantom-s-documentation-for-piloting-them-via-IP
+  - type: APIReference
+    url: openapi/_original/devialet-ip-control-r1.pdf
+  - type: Authentication
+    url: authentication/devialet-authentication.yml
+  - type: ErrorCatalog
+    url: errors/devialet-error-codes.yml
+  - type: Conventions
+    url: conventions/devialet-conventions.yml
+  - type: Idempotency
+    url: conventions/devialet-conventions.yml
+  - type: Lifecycle
+    url: lifecycle/devialet-lifecycle.yml
+  - type: DataModel
+    url: data-model/devialet-data-model.yml
+  - type: Examples
+    url: examples/devialet-ip-control-examples.yml
+  - type: ToolCrosswalk
+    url: mcp/devialet-tool-crosswalk.yml
 common:
 - type: AgenticAccess
   url: agentic-access/devialet-agentic-access.yml
