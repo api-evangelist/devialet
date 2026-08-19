@@ -1,0 +1,200 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Devialet IP Control Groups API",
+    "version": "1"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Groups",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List available sources for the group",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://{deviceAddress}/ipcontrol/v1/groups/:groupId/sources",
+            "params": [
+              {
+                "name": "groupId",
+                "value": "",
+                "type": "path",
+                "description": "Group identifier. The only value supported today is `current`, which refers to the group of the dispatcher."
+              }
+            ]
+          },
+          "docs": "Query the list of currently available audio sources for the designated group. The list changes when the group is reconfigured in the Devialet companion app, when devices become unreachable, or when an Arch physical input configuration changes. Minimal firmware: DOS >= 2.14."
+        },
+        {
+          "info": {
+            "name": "Get the current playback state for the group",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://{deviceAddress}/ipcontrol/v1/groups/:groupId/sources/current",
+            "params": [
+              {
+                "name": "groupId",
+                "value": "",
+                "type": "path",
+                "description": "Group identifier. The only value supported today is `current`, which refers to the group of the dispatcher."
+              }
+            ]
+          },
+          "docs": "Query the current playback state of the designated group and the capabilities of its current source — the source descriptor, `playingState`, `muteState`, track metadata when the source provides it, and the list of currently available playback operations. If there is no current source, `NoCurrentSource` is reported. Minimal firmware: DOS >= 2.14."
+        },
+        {
+          "info": {
+            "name": "Play or resume a source",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{deviceAddress}/ipcontrol/v1/groups/:groupId/sources/:sourceId/playback/play",
+            "params": [
+              {
+                "name": "groupId",
+                "value": "",
+                "type": "path",
+                "description": "Group identifier. The only value supported today is `current`, which refers to the group of the dispatcher."
+              },
+              {
+                "name": "sourceId",
+                "value": "",
+                "type": "path",
+                "description": "Source identifier in UUIDv4 format, as returned by `listGroupSources`. An unrecognised value results in a 200 response carrying a regular error object, not a 404."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Start or resume playback of the designated source on the group and set its `playingState` to `playing`. If the designated source is not the current source it is selected first and the previous source is paused and unselected. The call may have asynchronous effects — clients should re-read `getGroupCurrentSource` rather than trust the response. If playback cannot start, `PlaybackNoStream` is reported and the source still becomes current with no sound. If the source is already the current, playing"
+        },
+        {
+          "info": {
+            "name": "Pause the current source",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{deviceAddress}/ipcontrol/v1/groups/:groupId/sources/current/playback/pause",
+            "params": [
+              {
+                "name": "groupId",
+                "value": "",
+                "type": "path",
+                "description": "Group identifier. The only value supported today is `current`, which refers to the group of the dispatcher."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Pause playback of the group's current source and set its `playingState` to `paused`. All sources accept this command; sources that cannot semantically pause (for example `optical`) mute the output instead, leaving `playingState` as `playing` and setting `muteState` to `muted`. If already paused, the call succeeds. Minimal firmware: DOS >= 2.14."
+        },
+        {
+          "info": {
+            "name": "Mute the current source",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{deviceAddress}/ipcontrol/v1/groups/:groupId/sources/current/playback/mute",
+            "params": [
+              {
+                "name": "groupId",
+                "value": "",
+                "type": "path",
+                "description": "Group identifier. The only value supported today is `current`, which refers to the group of the dispatcher."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Mute playback of the group's current source and set its `muteState` to `muted`. Mute state is independent of play/pause state. If already muted, the call succeeds. Minimal firmware: DOS >= 2.14."
+        },
+        {
+          "info": {
+            "name": "Unmute the current source",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{deviceAddress}/ipcontrol/v1/groups/:groupId/sources/current/playback/unmute",
+            "params": [
+              {
+                "name": "groupId",
+                "value": "",
+                "type": "path",
+                "description": "Group identifier. The only value supported today is `current`, which refers to the group of the dispatcher."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Unmute playback of the group's current source and set its `muteState` to `unmuted`. If already unmuted, the call succeeds. Note that every volume command also unmutes the current source. Minimal firmware: DOS >= 2.14."
+        },
+        {
+          "info": {
+            "name": "Skip to the next track",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{deviceAddress}/ipcontrol/v1/groups/:groupId/sources/current/playback/next",
+            "params": [
+              {
+                "name": "groupId",
+                "value": "",
+                "type": "path",
+                "description": "Group identifier. The only value supported today is `current`, which refers to the group of the dispatcher."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Start playback of the next track on the group's current source. If the current source does not offer the next operation, `PlaybackOperationNotAvailable` is reported — check `availableOperations` from `getGroupCurrentSource` first. Minimal firmware: DOS >= 2.14."
+        },
+        {
+          "info": {
+            "name": "Skip to the previous track",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{deviceAddress}/ipcontrol/v1/groups/:groupId/sources/current/playback/previous",
+            "params": [
+              {
+                "name": "groupId",
+                "value": "",
+                "type": "path",
+                "description": "Group identifier. The only value supported today is `current`, which refers to the group of the dispatcher."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Start playback of the previous track on the group's current source. If the current source does not offer the previous operation, `PlaybackOperationNotAvailable` is reported. \"Restart the current track\" behaviour is not supported by this endpoint and must be implemented client-side. Minimal firmware: DOS >= 2.14."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

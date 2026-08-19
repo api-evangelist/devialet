@@ -1,0 +1,2397 @@
+{
+  "item": [
+    {
+      "id": "56a1389a-255d-4942-861f-ecf748a85f2f",
+      "name": "Groups",
+      "description": {
+        "content": "Sets of one or more systems playing the same content in the multi-room configuration.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "ef274c3c-c81c-45a2-ae4b-7e55cfe0c490",
+          "name": "List available sources for the group",
+          "request": {
+            "name": "List available sources for the group",
+            "description": {
+              "content": "Query the list of currently available audio sources for the designated group. The list changes when the group is reconfigured in the Devialet companion app, when devices become unreachable, or when an Arch physical input configuration changes. Minimal firmware: DOS >= 2.14.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "groups",
+                ":groupId",
+                "sources"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "current",
+                  "key": "groupId",
+                  "description": "(Required) Group identifier. The only value supported today is `current`, which refers to the group of the dispatcher."
+                },
+                {
+                  "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                  "type": "any",
+                  "value": "{{deviceAddress}}",
+                  "key": "deviceAddress"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "ce02f769-a1be-4919-acf2-b56650fb8da2",
+              "name": "The available sources, or a regular error object.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "groups",
+                    ":groupId",
+                    "sources"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "current",
+                      "key": "groupId",
+                      "description": "(Required) Group identifier. The only value supported today is `current`, which refers to the group of the dispatcher."
+                    },
+                    {
+                      "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                      "type": "any",
+                      "value": "{{deviceAddress}}",
+                      "key": "deviceAddress"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"sources\": [\n    {\n      \"sourceId\": \"string\",\n      \"deviceId\": \"string\",\n      \"type\": \"opticaljack\"\n    },\n    {\n      \"sourceId\": \"string\",\n      \"deviceId\": \"string\",\n      \"type\": \"raat\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "fb49a4bf-1631-4ea6-8220-69880025381c",
+              "name": "Non-existing endpoint — for example a `/systems/...` or `/groups/...` request performed against a non-speaker accessory. The message body is empty.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "groups",
+                    ":groupId",
+                    "sources"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "current",
+                      "key": "groupId",
+                      "description": "(Required) Group identifier. The only value supported today is `current`, which refers to the group of the dispatcher."
+                    },
+                    {
+                      "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                      "type": "any",
+                      "value": "{{deviceAddress}}",
+                      "key": "deviceAddress"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "73711b9e-8186-407f-a94f-dd60294e9e37",
+              "name": "Unexpected internal error. The body, when present, follows the regular error format, but its content is not part of the officially supported API.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "groups",
+                    ":groupId",
+                    "sources"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "current",
+                      "key": "groupId",
+                      "description": "(Required) Group identifier. The only value supported today is `current`, which refers to the group of the dispatcher."
+                    },
+                    {
+                      "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                      "type": "any",
+                      "value": "{{deviceAddress}}",
+                      "key": "deviceAddress"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"string\",\n    \"details\": {\n      \"key_0\": 6123\n    },\n    \"message\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "4e52d696-1813-4cd3-a36b-3f7a6774439b",
+          "name": "Get the current playback state for the group",
+          "request": {
+            "name": "Get the current playback state for the group",
+            "description": {
+              "content": "Query the current playback state of the designated group and the capabilities of its current source — the source descriptor, `playingState`, `muteState`, track metadata when the source provides it, and the list of currently available playback operations. If there is no current source, `NoCurrentSource` is reported. Minimal firmware: DOS >= 2.14.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "groups",
+                ":groupId",
+                "sources",
+                "current"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "current",
+                  "key": "groupId",
+                  "description": "(Required) Group identifier. The only value supported today is `current`, which refers to the group of the dispatcher."
+                },
+                {
+                  "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                  "type": "any",
+                  "value": "{{deviceAddress}}",
+                  "key": "deviceAddress"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "76dcdf8d-c82d-43cd-a34d-da9897432c70",
+              "name": "The current playback state, or a regular error object.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "groups",
+                    ":groupId",
+                    "sources",
+                    "current"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "current",
+                      "key": "groupId",
+                      "description": "(Required) Group identifier. The only value supported today is `current`, which refers to the group of the dispatcher."
+                    },
+                    {
+                      "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                      "type": "any",
+                      "value": "{{deviceAddress}}",
+                      "key": "deviceAddress"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"source\": {\n    \"sourceId\": \"213a3ed0-1fb9-4da2-bcf4-066da0f7b27e\",\n    \"deviceId\": \"13531594-b1c1-42c7-8d5a-18fa9e5d7cd4\",\n    \"type\": \"spotifyconnect\"\n  },\n  \"playingState\": \"playing\",\n  \"muteState\": \"unmuted\",\n  \"metadata\": {\n    \"artist\": \"Michael Jackson\",\n    \"album\": \"Thriller\",\n    \"title\": \"Billie Jean\",\n    \"coverArtUrl\": \"https://cdn.spotify.com/covers/4729028427.png\"\n  },\n  \"availableOperations\": [\n    \"play\",\n    \"pause\",\n    \"seek\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "119d2cff-2e91-4ec1-9e8f-4e725eb5e42f",
+              "name": "Non-existing endpoint — for example a `/systems/...` or `/groups/...` request performed against a non-speaker accessory. The message body is empty.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "groups",
+                    ":groupId",
+                    "sources",
+                    "current"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "current",
+                      "key": "groupId",
+                      "description": "(Required) Group identifier. The only value supported today is `current`, which refers to the group of the dispatcher."
+                    },
+                    {
+                      "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                      "type": "any",
+                      "value": "{{deviceAddress}}",
+                      "key": "deviceAddress"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "c1a77601-a888-4a81-bfe1-ce0bb7634235",
+              "name": "Unexpected internal error. The body, when present, follows the regular error format, but its content is not part of the officially supported API.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "groups",
+                    ":groupId",
+                    "sources",
+                    "current"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "current",
+                      "key": "groupId",
+                      "description": "(Required) Group identifier. The only value supported today is `current`, which refers to the group of the dispatcher."
+                    },
+                    {
+                      "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                      "type": "any",
+                      "value": "{{deviceAddress}}",
+                      "key": "deviceAddress"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"string\",\n    \"details\": {\n      \"key_0\": 6123\n    },\n    \"message\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "3b80b64b-6e41-4864-8449-e392d9bd9196",
+          "name": "Play or resume a source",
+          "request": {
+            "name": "Play or resume a source",
+            "description": {
+              "content": "Start or resume playback of the designated source on the group and set its `playingState` to `playing`. If the designated source is not the current source it is selected first and the previous source is paused and unselected. The call may have asynchronous effects — clients should re-read `getGroupCurrentSource` rather than trust the response. If playback cannot start, `PlaybackNoStream` is reported and the source still becomes current with no sound. If the source is already the current, playing source, the call succeeds. Selecting an AirPlay 2 or Roon Ready source removes the host system from its current group. Minimal firmware: DOS >= 2.14.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "groups",
+                ":groupId",
+                "sources",
+                ":sourceId",
+                "playback",
+                "play"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "current",
+                  "key": "groupId",
+                  "description": "(Required) Group identifier. The only value supported today is `current`, which refers to the group of the dispatcher."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "sourceId",
+                  "description": "(Required) Source identifier in UUIDv4 format, as returned by `listGroupSources`. An unrecognised value results in a 200 response carrying a regular error object, not a 404."
+                },
+                {
+                  "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                  "type": "any",
+                  "value": "{{deviceAddress}}",
+                  "key": "deviceAddress"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "f256db72-2f3f-4a4a-90fa-0b1bb54d78bb",
+              "name": "Success (an empty JSON object) or a regular error. Devialet returns regular errors with HTTP status 200 and an `error` object in the body.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "groups",
+                    ":groupId",
+                    "sources",
+                    ":sourceId",
+                    "playback",
+                    "play"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "current",
+                      "key": "groupId",
+                      "description": "(Required) Group identifier. The only value supported today is `current`, which refers to the group of the dispatcher."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "sourceId",
+                      "description": "(Required) Source identifier in UUIDv4 format, as returned by `listGroupSources`. An unrecognised value results in a 200 response carrying a regular error object, not a 404."
+                    },
+                    {
+                      "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                      "type": "any",
+                      "value": "{{deviceAddress}}",
+                      "key": "deviceAddress"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0475ee17-84d3-4d8d-94ec-a86a0271afe8",
+              "name": "Malformed JSON request. The message body is empty.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "groups",
+                    ":groupId",
+                    "sources",
+                    ":sourceId",
+                    "playback",
+                    "play"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "current",
+                      "key": "groupId",
+                      "description": "(Required) Group identifier. The only value supported today is `current`, which refers to the group of the dispatcher."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "sourceId",
+                      "description": "(Required) Source identifier in UUIDv4 format, as returned by `listGroupSources`. An unrecognised value results in a 200 response carrying a regular error object, not a 404."
+                    },
+                    {
+                      "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                      "type": "any",
+                      "value": "{{deviceAddress}}",
+                      "key": "deviceAddress"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "e85d6329-d691-4b7f-853b-1240205b8db6",
+              "name": "Non-existing endpoint — for example a `/systems/...` or `/groups/...` request performed against a non-speaker accessory. The message body is empty.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "groups",
+                    ":groupId",
+                    "sources",
+                    ":sourceId",
+                    "playback",
+                    "play"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "current",
+                      "key": "groupId",
+                      "description": "(Required) Group identifier. The only value supported today is `current`, which refers to the group of the dispatcher."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "sourceId",
+                      "description": "(Required) Source identifier in UUIDv4 format, as returned by `listGroupSources`. An unrecognised value results in a 200 response carrying a regular error object, not a 404."
+                    },
+                    {
+                      "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                      "type": "any",
+                      "value": "{{deviceAddress}}",
+                      "key": "deviceAddress"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "0e102f84-c9d3-4aad-bc4a-59b95b2a8d9e",
+              "name": "Invalid or missing `Content-Type` header on a POST request. The only allowed value is `application/json`.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "groups",
+                    ":groupId",
+                    "sources",
+                    ":sourceId",
+                    "playback",
+                    "play"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "current",
+                      "key": "groupId",
+                      "description": "(Required) Group identifier. The only value supported today is `current`, which refers to the group of the dispatcher."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "sourceId",
+                      "description": "(Required) Source identifier in UUIDv4 format, as returned by `listGroupSources`. An unrecognised value results in a 200 response carrying a regular error object, not a 404."
+                    },
+                    {
+                      "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                      "type": "any",
+                      "value": "{{deviceAddress}}",
+                      "key": "deviceAddress"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Unsupported Media Type",
+              "code": 415,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "a78ca39c-6677-4275-8900-26cffe85b667",
+              "name": "Unexpected internal error. The body, when present, follows the regular error format, but its content is not part of the officially supported API.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "groups",
+                    ":groupId",
+                    "sources",
+                    ":sourceId",
+                    "playback",
+                    "play"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "current",
+                      "key": "groupId",
+                      "description": "(Required) Group identifier. The only value supported today is `current`, which refers to the group of the dispatcher."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "sourceId",
+                      "description": "(Required) Source identifier in UUIDv4 format, as returned by `listGroupSources`. An unrecognised value results in a 200 response carrying a regular error object, not a 404."
+                    },
+                    {
+                      "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                      "type": "any",
+                      "value": "{{deviceAddress}}",
+                      "key": "deviceAddress"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"string\",\n    \"details\": {\n      \"key_0\": 6123\n    },\n    \"message\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "d3439f9d-ed43-48d5-ae62-6ad5af0bc56e",
+          "name": "Pause the current source",
+          "request": {
+            "name": "Pause the current source",
+            "description": {
+              "content": "Pause playback of the group's current source and set its `playingState` to `paused`. All sources accept this command; sources that cannot semantically pause (for example `optical`) mute the output instead, leaving `playingState` as `playing` and setting `muteState` to `muted`. If already paused, the call succeeds. Minimal firmware: DOS >= 2.14.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "groups",
+                ":groupId",
+                "sources",
+                "current",
+                "playback",
+                "pause"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "current",
+                  "key": "groupId",
+                  "description": "(Required) Group identifier. The only value supported today is `current`, which refers to the group of the dispatcher."
+                },
+                {
+                  "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                  "type": "any",
+                  "value": "{{deviceAddress}}",
+                  "key": "deviceAddress"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "132eb946-0c2c-4d79-bdd3-eadb47499345",
+              "name": "Success (an empty JSON object) or a regular error. Devialet returns regular errors with HTTP status 200 and an `error` object in the body.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "groups",
+                    ":groupId",
+                    "sources",
+                    "current",
+                    "playback",
+                    "pause"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "current",
+                      "key": "groupId",
+                      "description": "(Required) Group identifier. The only value supported today is `current`, which refers to the group of the dispatcher."
+                    },
+                    {
+                      "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                      "type": "any",
+                      "value": "{{deviceAddress}}",
+                      "key": "deviceAddress"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ff6c2de7-c187-4b18-89b1-567c7614cb3b",
+              "name": "Malformed JSON request. The message body is empty.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "groups",
+                    ":groupId",
+                    "sources",
+                    "current",
+                    "playback",
+                    "pause"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "current",
+                      "key": "groupId",
+                      "description": "(Required) Group identifier. The only value supported today is `current`, which refers to the group of the dispatcher."
+                    },
+                    {
+                      "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                      "type": "any",
+                      "value": "{{deviceAddress}}",
+                      "key": "deviceAddress"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "a267752c-3210-4bff-92a8-54ace0b4d998",
+              "name": "Non-existing endpoint — for example a `/systems/...` or `/groups/...` request performed against a non-speaker accessory. The message body is empty.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "groups",
+                    ":groupId",
+                    "sources",
+                    "current",
+                    "playback",
+                    "pause"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "current",
+                      "key": "groupId",
+                      "description": "(Required) Group identifier. The only value supported today is `current`, which refers to the group of the dispatcher."
+                    },
+                    {
+                      "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                      "type": "any",
+                      "value": "{{deviceAddress}}",
+                      "key": "deviceAddress"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "caaf2703-265c-40af-949f-a8cf6a108ae6",
+              "name": "Invalid or missing `Content-Type` header on a POST request. The only allowed value is `application/json`.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "groups",
+                    ":groupId",
+                    "sources",
+                    "current",
+                    "playback",
+                    "pause"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "current",
+                      "key": "groupId",
+                      "description": "(Required) Group identifier. The only value supported today is `current`, which refers to the group of the dispatcher."
+                    },
+                    {
+                      "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                      "type": "any",
+                      "value": "{{deviceAddress}}",
+                      "key": "deviceAddress"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Unsupported Media Type",
+              "code": 415,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "35e38d3b-723b-4ce9-ac08-ae2e2c773b76",
+              "name": "Unexpected internal error. The body, when present, follows the regular error format, but its content is not part of the officially supported API.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "groups",
+                    ":groupId",
+                    "sources",
+                    "current",
+                    "playback",
+                    "pause"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "current",
+                      "key": "groupId",
+                      "description": "(Required) Group identifier. The only value supported today is `current`, which refers to the group of the dispatcher."
+                    },
+                    {
+                      "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                      "type": "any",
+                      "value": "{{deviceAddress}}",
+                      "key": "deviceAddress"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"string\",\n    \"details\": {\n      \"key_0\": 6123\n    },\n    \"message\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "e4878463-f601-4f80-b19e-8715ab975470",
+          "name": "Mute the current source",
+          "request": {
+            "name": "Mute the current source",
+            "description": {
+              "content": "Mute playback of the group's current source and set its `muteState` to `muted`. Mute state is independent of play/pause state. If already muted, the call succeeds. Minimal firmware: DOS >= 2.14.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "groups",
+                ":groupId",
+                "sources",
+                "current",
+                "playback",
+                "mute"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "current",
+                  "key": "groupId",
+                  "description": "(Required) Group identifier. The only value supported today is `current`, which refers to the group of the dispatcher."
+                },
+                {
+                  "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                  "type": "any",
+                  "value": "{{deviceAddress}}",
+                  "key": "deviceAddress"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "3308ec7b-8e95-4b15-9391-f4f1b9a760a7",
+              "name": "Success (an empty JSON object) or a regular error. Devialet returns regular errors with HTTP status 200 and an `error` object in the body.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "groups",
+                    ":groupId",
+                    "sources",
+                    "current",
+                    "playback",
+                    "mute"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "current",
+                      "key": "groupId",
+                      "description": "(Required) Group identifier. The only value supported today is `current`, which refers to the group of the dispatcher."
+                    },
+                    {
+                      "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                      "type": "any",
+                      "value": "{{deviceAddress}}",
+                      "key": "deviceAddress"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "913a1784-93e5-4d95-ac14-ffb69d84e732",
+              "name": "Malformed JSON request. The message body is empty.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "groups",
+                    ":groupId",
+                    "sources",
+                    "current",
+                    "playback",
+                    "mute"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "current",
+                      "key": "groupId",
+                      "description": "(Required) Group identifier. The only value supported today is `current`, which refers to the group of the dispatcher."
+                    },
+                    {
+                      "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                      "type": "any",
+                      "value": "{{deviceAddress}}",
+                      "key": "deviceAddress"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "675613e9-e780-4d46-8b55-62e5ccb21083",
+              "name": "Non-existing endpoint — for example a `/systems/...` or `/groups/...` request performed against a non-speaker accessory. The message body is empty.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "groups",
+                    ":groupId",
+                    "sources",
+                    "current",
+                    "playback",
+                    "mute"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "current",
+                      "key": "groupId",
+                      "description": "(Required) Group identifier. The only value supported today is `current`, which refers to the group of the dispatcher."
+                    },
+                    {
+                      "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                      "type": "any",
+                      "value": "{{deviceAddress}}",
+                      "key": "deviceAddress"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "f4b5326c-a2b7-451d-a710-1761b542ba1e",
+              "name": "Invalid or missing `Content-Type` header on a POST request. The only allowed value is `application/json`.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "groups",
+                    ":groupId",
+                    "sources",
+                    "current",
+                    "playback",
+                    "mute"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "current",
+                      "key": "groupId",
+                      "description": "(Required) Group identifier. The only value supported today is `current`, which refers to the group of the dispatcher."
+                    },
+                    {
+                      "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                      "type": "any",
+                      "value": "{{deviceAddress}}",
+                      "key": "deviceAddress"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Unsupported Media Type",
+              "code": 415,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "bf6dbbcc-1d0a-48fa-841c-ee96081a89bd",
+              "name": "Unexpected internal error. The body, when present, follows the regular error format, but its content is not part of the officially supported API.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "groups",
+                    ":groupId",
+                    "sources",
+                    "current",
+                    "playback",
+                    "mute"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "current",
+                      "key": "groupId",
+                      "description": "(Required) Group identifier. The only value supported today is `current`, which refers to the group of the dispatcher."
+                    },
+                    {
+                      "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                      "type": "any",
+                      "value": "{{deviceAddress}}",
+                      "key": "deviceAddress"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"string\",\n    \"details\": {\n      \"key_0\": 6123\n    },\n    \"message\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "b3c928d0-20ea-45bc-bc9b-ce24d1033024",
+          "name": "Unmute the current source",
+          "request": {
+            "name": "Unmute the current source",
+            "description": {
+              "content": "Unmute playback of the group's current source and set its `muteState` to `unmuted`. If already unmuted, the call succeeds. Note that every volume command also unmutes the current source. Minimal firmware: DOS >= 2.14.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "groups",
+                ":groupId",
+                "sources",
+                "current",
+                "playback",
+                "unmute"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "current",
+                  "key": "groupId",
+                  "description": "(Required) Group identifier. The only value supported today is `current`, which refers to the group of the dispatcher."
+                },
+                {
+                  "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                  "type": "any",
+                  "value": "{{deviceAddress}}",
+                  "key": "deviceAddress"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "b38b11db-9cd8-438a-a08d-99087896209c",
+              "name": "Success (an empty JSON object) or a regular error. Devialet returns regular errors with HTTP status 200 and an `error` object in the body.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "groups",
+                    ":groupId",
+                    "sources",
+                    "current",
+                    "playback",
+                    "unmute"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "current",
+                      "key": "groupId",
+                      "description": "(Required) Group identifier. The only value supported today is `current`, which refers to the group of the dispatcher."
+                    },
+                    {
+                      "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                      "type": "any",
+                      "value": "{{deviceAddress}}",
+                      "key": "deviceAddress"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "02a74b98-bfe0-40dd-a777-22e3b465ef75",
+              "name": "Malformed JSON request. The message body is empty.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "groups",
+                    ":groupId",
+                    "sources",
+                    "current",
+                    "playback",
+                    "unmute"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "current",
+                      "key": "groupId",
+                      "description": "(Required) Group identifier. The only value supported today is `current`, which refers to the group of the dispatcher."
+                    },
+                    {
+                      "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                      "type": "any",
+                      "value": "{{deviceAddress}}",
+                      "key": "deviceAddress"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "d0e628e2-1e78-48fe-97ad-96978253c138",
+              "name": "Non-existing endpoint — for example a `/systems/...` or `/groups/...` request performed against a non-speaker accessory. The message body is empty.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "groups",
+                    ":groupId",
+                    "sources",
+                    "current",
+                    "playback",
+                    "unmute"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "current",
+                      "key": "groupId",
+                      "description": "(Required) Group identifier. The only value supported today is `current`, which refers to the group of the dispatcher."
+                    },
+                    {
+                      "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                      "type": "any",
+                      "value": "{{deviceAddress}}",
+                      "key": "deviceAddress"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "7087d065-813b-4cd1-b287-b247bdaaa1e7",
+              "name": "Invalid or missing `Content-Type` header on a POST request. The only allowed value is `application/json`.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "groups",
+                    ":groupId",
+                    "sources",
+                    "current",
+                    "playback",
+                    "unmute"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "current",
+                      "key": "groupId",
+                      "description": "(Required) Group identifier. The only value supported today is `current`, which refers to the group of the dispatcher."
+                    },
+                    {
+                      "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                      "type": "any",
+                      "value": "{{deviceAddress}}",
+                      "key": "deviceAddress"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Unsupported Media Type",
+              "code": 415,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "78bda65f-3b48-4f2d-8fad-880c3334cc30",
+              "name": "Unexpected internal error. The body, when present, follows the regular error format, but its content is not part of the officially supported API.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "groups",
+                    ":groupId",
+                    "sources",
+                    "current",
+                    "playback",
+                    "unmute"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "current",
+                      "key": "groupId",
+                      "description": "(Required) Group identifier. The only value supported today is `current`, which refers to the group of the dispatcher."
+                    },
+                    {
+                      "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                      "type": "any",
+                      "value": "{{deviceAddress}}",
+                      "key": "deviceAddress"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"string\",\n    \"details\": {\n      \"key_0\": 6123\n    },\n    \"message\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "d7ef5fb3-5f23-4793-9bdf-df0ad4d9b634",
+          "name": "Skip to the next track",
+          "request": {
+            "name": "Skip to the next track",
+            "description": {
+              "content": "Start playback of the next track on the group's current source. If the current source does not offer the next operation, `PlaybackOperationNotAvailable` is reported — check `availableOperations` from `getGroupCurrentSource` first. Minimal firmware: DOS >= 2.14.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "groups",
+                ":groupId",
+                "sources",
+                "current",
+                "playback",
+                "next"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "current",
+                  "key": "groupId",
+                  "description": "(Required) Group identifier. The only value supported today is `current`, which refers to the group of the dispatcher."
+                },
+                {
+                  "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                  "type": "any",
+                  "value": "{{deviceAddress}}",
+                  "key": "deviceAddress"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "60faa0e9-3787-47c7-aab2-630643b4d312",
+              "name": "Success (an empty JSON object) or a regular error. Devialet returns regular errors with HTTP status 200 and an `error` object in the body.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "groups",
+                    ":groupId",
+                    "sources",
+                    "current",
+                    "playback",
+                    "next"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "current",
+                      "key": "groupId",
+                      "description": "(Required) Group identifier. The only value supported today is `current`, which refers to the group of the dispatcher."
+                    },
+                    {
+                      "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                      "type": "any",
+                      "value": "{{deviceAddress}}",
+                      "key": "deviceAddress"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "457de12e-d39f-4de5-8f00-de531ea83f4d",
+              "name": "Malformed JSON request. The message body is empty.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "groups",
+                    ":groupId",
+                    "sources",
+                    "current",
+                    "playback",
+                    "next"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "current",
+                      "key": "groupId",
+                      "description": "(Required) Group identifier. The only value supported today is `current`, which refers to the group of the dispatcher."
+                    },
+                    {
+                      "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                      "type": "any",
+                      "value": "{{deviceAddress}}",
+                      "key": "deviceAddress"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "717342cc-c422-4743-a1fc-da03daaa2065",
+              "name": "Non-existing endpoint — for example a `/systems/...` or `/groups/...` request performed against a non-speaker accessory. The message body is empty.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "groups",
+                    ":groupId",
+                    "sources",
+                    "current",
+                    "playback",
+                    "next"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "current",
+                      "key": "groupId",
+                      "description": "(Required) Group identifier. The only value supported today is `current`, which refers to the group of the dispatcher."
+                    },
+                    {
+                      "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                      "type": "any",
+                      "value": "{{deviceAddress}}",
+                      "key": "deviceAddress"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "3ff06297-1fef-47e9-8377-6aa812ea1b3d",
+              "name": "Invalid or missing `Content-Type` header on a POST request. The only allowed value is `application/json`.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "groups",
+                    ":groupId",
+                    "sources",
+                    "current",
+                    "playback",
+                    "next"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "current",
+                      "key": "groupId",
+                      "description": "(Required) Group identifier. The only value supported today is `current`, which refers to the group of the dispatcher."
+                    },
+                    {
+                      "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                      "type": "any",
+                      "value": "{{deviceAddress}}",
+                      "key": "deviceAddress"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Unsupported Media Type",
+              "code": 415,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "b4eebb07-d5e6-4b37-82de-e5a22dcc84a3",
+              "name": "Unexpected internal error. The body, when present, follows the regular error format, but its content is not part of the officially supported API.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "groups",
+                    ":groupId",
+                    "sources",
+                    "current",
+                    "playback",
+                    "next"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "current",
+                      "key": "groupId",
+                      "description": "(Required) Group identifier. The only value supported today is `current`, which refers to the group of the dispatcher."
+                    },
+                    {
+                      "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                      "type": "any",
+                      "value": "{{deviceAddress}}",
+                      "key": "deviceAddress"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"string\",\n    \"details\": {\n      \"key_0\": 6123\n    },\n    \"message\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "4c4f7c0f-eea8-4724-974c-85b23506ac02",
+          "name": "Skip to the previous track",
+          "request": {
+            "name": "Skip to the previous track",
+            "description": {
+              "content": "Start playback of the previous track on the group's current source. If the current source does not offer the previous operation, `PlaybackOperationNotAvailable` is reported. \"Restart the current track\" behaviour is not supported by this endpoint and must be implemented client-side. Minimal firmware: DOS >= 2.14.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "groups",
+                ":groupId",
+                "sources",
+                "current",
+                "playback",
+                "previous"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "current",
+                  "key": "groupId",
+                  "description": "(Required) Group identifier. The only value supported today is `current`, which refers to the group of the dispatcher."
+                },
+                {
+                  "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                  "type": "any",
+                  "value": "{{deviceAddress}}",
+                  "key": "deviceAddress"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "fe2f2122-17f0-4bb8-8157-8ee2b5c221e5",
+              "name": "Success (an empty JSON object) or a regular error. Devialet returns regular errors with HTTP status 200 and an `error` object in the body.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "groups",
+                    ":groupId",
+                    "sources",
+                    "current",
+                    "playback",
+                    "previous"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "current",
+                      "key": "groupId",
+                      "description": "(Required) Group identifier. The only value supported today is `current`, which refers to the group of the dispatcher."
+                    },
+                    {
+                      "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                      "type": "any",
+                      "value": "{{deviceAddress}}",
+                      "key": "deviceAddress"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c728dcae-4ae7-40ed-9488-c8e952e71ffb",
+              "name": "Malformed JSON request. The message body is empty.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "groups",
+                    ":groupId",
+                    "sources",
+                    "current",
+                    "playback",
+                    "previous"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "current",
+                      "key": "groupId",
+                      "description": "(Required) Group identifier. The only value supported today is `current`, which refers to the group of the dispatcher."
+                    },
+                    {
+                      "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                      "type": "any",
+                      "value": "{{deviceAddress}}",
+                      "key": "deviceAddress"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "ea247afc-7c5c-4c0e-a248-006017db618b",
+              "name": "Non-existing endpoint — for example a `/systems/...` or `/groups/...` request performed against a non-speaker accessory. The message body is empty.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "groups",
+                    ":groupId",
+                    "sources",
+                    "current",
+                    "playback",
+                    "previous"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "current",
+                      "key": "groupId",
+                      "description": "(Required) Group identifier. The only value supported today is `current`, which refers to the group of the dispatcher."
+                    },
+                    {
+                      "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                      "type": "any",
+                      "value": "{{deviceAddress}}",
+                      "key": "deviceAddress"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "f3c62bd6-4113-48b8-bb75-8d89773f023d",
+              "name": "Invalid or missing `Content-Type` header on a POST request. The only allowed value is `application/json`.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "groups",
+                    ":groupId",
+                    "sources",
+                    "current",
+                    "playback",
+                    "previous"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "current",
+                      "key": "groupId",
+                      "description": "(Required) Group identifier. The only value supported today is `current`, which refers to the group of the dispatcher."
+                    },
+                    {
+                      "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                      "type": "any",
+                      "value": "{{deviceAddress}}",
+                      "key": "deviceAddress"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Unsupported Media Type",
+              "code": 415,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "ddeffe5c-f588-445b-96ed-a602beac3670",
+              "name": "Unexpected internal error. The body, when present, follows the regular error format, but its content is not part of the officially supported API.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "groups",
+                    ":groupId",
+                    "sources",
+                    "current",
+                    "playback",
+                    "previous"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "current",
+                      "key": "groupId",
+                      "description": "(Required) Group identifier. The only value supported today is `current`, which refers to the group of the dispatcher."
+                    },
+                    {
+                      "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                      "type": "any",
+                      "value": "{{deviceAddress}}",
+                      "key": "deviceAddress"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"string\",\n    \"details\": {\n      \"key_0\": 6123\n    },\n    \"message\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "description": {
+        "content": "IP address or mDNS hostname of a Devialet device on the local network.",
+        "type": "text/plain"
+      },
+      "type": "any",
+      "value": "192.168.1.20",
+      "key": "deviceAddress"
+    },
+    {
+      "type": "string",
+      "value": "http://{{deviceAddress}}/ipcontrol/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "7ae31cf9-7541-44f6-b78d-ff064dc7c6e9",
+    "name": "Devialet IP Control Groups API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Devialet IP Control API is an unauthenticated HTTP API served by Devialet devices themselves on the local network. Starting with DOS 2.14 firmware, the Phantom range (Phantom I, Phantom II, and the Arch and Dialog accessories) exposes device, system, and group state plus playback, volume, equalizer, night-mode, Bluetooth pairing, and power/restart/factory-reset commands over plain HTTP on port 80 under the `/ipcontrol/v1` path prefix. Devices are discovered with mDNS/DNS-SD: they register `_http._tcp` service instances whose TXT record carries `manufacturer=Devialet`, `ipControlVersion=1`, and `path=/ipcontrol/v1`. Queries use GET and are guaranteed not to change device state; commands use POST and require `Content-Type: application/json`. Regular (non-transport) errors are returned inside a `200 OK` response as an `error` object rather than as an HTTP error status.\n\nContact Support:\n Name: Devialet Help Center",
+      "type": "text/plain"
+    }
+  }
+}

@@ -1,0 +1,102 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Devialet IP Control Audio Settings API",
+    "version": "1"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Audio Settings",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get the equalizer configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://{deviceAddress}/ipcontrol/v1/systems/:systemId/settings/audio/equalizer",
+            "params": [
+              {
+                "name": "systemId",
+                "value": "",
+                "type": "path",
+                "description": "System identifier. The only value supported today is `current`, which refers to the system of the dispatcher."
+              }
+            ]
+          },
+          "docs": "Query the equalizer preset, current per-band equalization, stored custom equalization, authorized gain range, and the list of available presets for the designated system. Minimal firmware: DOS >= 2.16."
+        },
+        {
+          "info": {
+            "name": "Set the equalizer preset and custom gains",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{deviceAddress}/ipcontrol/v1/systems/:systemId/settings/audio/equalizer",
+            "params": [
+              {
+                "name": "systemId",
+                "value": "",
+                "type": "path",
+                "description": "System identifier. The only value supported today is `current`, which refers to the system of the dispatcher."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Select an equalizer preset and optionally update the stored custom per-band gains. Gains are rounded to the nearest authorized multiple of `stepPrecision`; out-of-bounds values report `InvalidValue`. `customEqualization` may be omitted, in which case the stored custom gains are left unchanged. If the system leader is absent, `SystemLeaderAbsent` is reported. If the parameters already match the current state the call succeeds. Minimal firmware: DOS >= 2.16."
+        },
+        {
+          "info": {
+            "name": "Get the night-mode setting",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://{deviceAddress}/ipcontrol/v1/systems/:systemId/settings/audio/nightMode",
+            "params": [
+              {
+                "name": "systemId",
+                "value": "",
+                "type": "path",
+                "description": "System identifier. The only value supported today is `current`, which refers to the system of the dispatcher."
+              }
+            ]
+          },
+          "docs": "Query the night-mode audio rendering setting for the designated system. Minimal firmware: DOS >= 2.16."
+        },
+        {
+          "info": {
+            "name": "Set the night-mode setting",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{deviceAddress}/ipcontrol/v1/systems/:systemId/settings/audio/nightMode",
+            "params": [
+              {
+                "name": "systemId",
+                "value": "",
+                "type": "path",
+                "description": "System identifier. The only value supported today is `current`, which refers to the system of the dispatcher."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Turn night-mode audio rendering on or off for the designated system. If the selection already matches the current state the call succeeds. If the system leader is absent, `SystemLeaderAbsent` is reported. Minimal firmware: DOS >= 2.16."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

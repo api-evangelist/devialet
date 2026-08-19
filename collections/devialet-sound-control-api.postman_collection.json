@@ -1,0 +1,1248 @@
+{
+  "item": [
+    {
+      "id": "c7053ef4-a6a8-48cc-b928-89cf738380c8",
+      "name": "Sound Control",
+      "description": {
+        "content": "Volume query and control at the system level.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "d196d45d-4b46-4433-a63c-ed9964cced4d",
+          "name": "Get the current system volume",
+          "request": {
+            "name": "Get the current system volume",
+            "description": {
+              "content": "Query the current volume of the designated system, in percent (0-100). All devices in the same system share the same volume. Minimal firmware: DOS >= 2.14.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "systems",
+                ":systemId",
+                "sources",
+                "current",
+                "soundControl",
+                "volume"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "current",
+                  "key": "systemId",
+                  "description": "(Required) System identifier. The only value supported today is `current`, which refers to the system of the dispatcher."
+                },
+                {
+                  "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                  "type": "any",
+                  "value": "{{deviceAddress}}",
+                  "key": "deviceAddress"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "2393f393-2e42-486c-9ec9-19711e9a9cb1",
+              "name": "The current volume, or a regular error object.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "systems",
+                    ":systemId",
+                    "sources",
+                    "current",
+                    "soundControl",
+                    "volume"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "current",
+                      "key": "systemId",
+                      "description": "(Required) System identifier. The only value supported today is `current`, which refers to the system of the dispatcher."
+                    },
+                    {
+                      "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                      "type": "any",
+                      "value": "{{deviceAddress}}",
+                      "key": "deviceAddress"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"volume\": 35\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "da278601-cb2b-4740-8e76-fcdae7e75bad",
+              "name": "Non-existing endpoint — for example a `/systems/...` or `/groups/...` request performed against a non-speaker accessory. The message body is empty.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "systems",
+                    ":systemId",
+                    "sources",
+                    "current",
+                    "soundControl",
+                    "volume"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "current",
+                      "key": "systemId",
+                      "description": "(Required) System identifier. The only value supported today is `current`, which refers to the system of the dispatcher."
+                    },
+                    {
+                      "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                      "type": "any",
+                      "value": "{{deviceAddress}}",
+                      "key": "deviceAddress"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "dfed833d-64c7-4420-b1ad-6dd0ae8125b3",
+              "name": "Unexpected internal error. The body, when present, follows the regular error format, but its content is not part of the officially supported API.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "systems",
+                    ":systemId",
+                    "sources",
+                    "current",
+                    "soundControl",
+                    "volume"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "current",
+                      "key": "systemId",
+                      "description": "(Required) System identifier. The only value supported today is `current`, which refers to the system of the dispatcher."
+                    },
+                    {
+                      "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                      "type": "any",
+                      "value": "{{deviceAddress}}",
+                      "key": "deviceAddress"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"string\",\n    \"details\": {\n      \"key_0\": 2185.036258529649,\n      \"key_1\": 6065.458113541415\n    },\n    \"message\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c5cc0eec-7575-4362-aa59-cd9dcc06cbf9",
+          "name": "Set the system volume",
+          "request": {
+            "name": "Set the system volume",
+            "description": {
+              "content": "Set the current volume of the designated system, in percent (0-100). All volume commands unmute the current source but do not change `playingState`. Values outside the range report the `InvalidValue` error code. Minimal firmware: DOS >= 2.14.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "systems",
+                ":systemId",
+                "sources",
+                "current",
+                "soundControl",
+                "volume"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "current",
+                  "key": "systemId",
+                  "description": "(Required) System identifier. The only value supported today is `current`, which refers to the system of the dispatcher."
+                },
+                {
+                  "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                  "type": "any",
+                  "value": "{{deviceAddress}}",
+                  "key": "deviceAddress"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"volume\": \"<integer>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "fec9a39a-86b6-4ffe-a4a3-4347b1563e5f",
+              "name": "Success (an empty JSON object) or a regular error. Devialet returns regular errors with HTTP status 200 and an `error` object in the body.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "systems",
+                    ":systemId",
+                    "sources",
+                    "current",
+                    "soundControl",
+                    "volume"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "current",
+                      "key": "systemId",
+                      "description": "(Required) System identifier. The only value supported today is `current`, which refers to the system of the dispatcher."
+                    },
+                    {
+                      "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                      "type": "any",
+                      "value": "{{deviceAddress}}",
+                      "key": "deviceAddress"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"volume\": 35\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4dd53372-3b4e-444b-9acd-4a279c1682c1",
+              "name": "Malformed JSON request. The message body is empty.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "systems",
+                    ":systemId",
+                    "sources",
+                    "current",
+                    "soundControl",
+                    "volume"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "current",
+                      "key": "systemId",
+                      "description": "(Required) System identifier. The only value supported today is `current`, which refers to the system of the dispatcher."
+                    },
+                    {
+                      "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                      "type": "any",
+                      "value": "{{deviceAddress}}",
+                      "key": "deviceAddress"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"volume\": 35\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "aab0e361-d7fd-4923-9875-094f4ee69a30",
+              "name": "Non-existing endpoint — for example a `/systems/...` or `/groups/...` request performed against a non-speaker accessory. The message body is empty.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "systems",
+                    ":systemId",
+                    "sources",
+                    "current",
+                    "soundControl",
+                    "volume"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "current",
+                      "key": "systemId",
+                      "description": "(Required) System identifier. The only value supported today is `current`, which refers to the system of the dispatcher."
+                    },
+                    {
+                      "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                      "type": "any",
+                      "value": "{{deviceAddress}}",
+                      "key": "deviceAddress"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"volume\": 35\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "1294ba44-f2e9-480f-9edb-9781ae497cdf",
+              "name": "Invalid or missing `Content-Type` header on a POST request. The only allowed value is `application/json`.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "systems",
+                    ":systemId",
+                    "sources",
+                    "current",
+                    "soundControl",
+                    "volume"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "current",
+                      "key": "systemId",
+                      "description": "(Required) System identifier. The only value supported today is `current`, which refers to the system of the dispatcher."
+                    },
+                    {
+                      "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                      "type": "any",
+                      "value": "{{deviceAddress}}",
+                      "key": "deviceAddress"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"volume\": 35\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unsupported Media Type",
+              "code": 415,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "b30c2252-221d-4b5b-be98-c1cac5a8724c",
+              "name": "Unexpected internal error. The body, when present, follows the regular error format, but its content is not part of the officially supported API.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "systems",
+                    ":systemId",
+                    "sources",
+                    "current",
+                    "soundControl",
+                    "volume"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "current",
+                      "key": "systemId",
+                      "description": "(Required) System identifier. The only value supported today is `current`, which refers to the system of the dispatcher."
+                    },
+                    {
+                      "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                      "type": "any",
+                      "value": "{{deviceAddress}}",
+                      "key": "deviceAddress"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"volume\": 35\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"string\",\n    \"details\": {\n      \"key_0\": 2185.036258529649,\n      \"key_1\": 6065.458113541415\n    },\n    \"message\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "e8678cfe-34f7-4836-9e93-deda07c24beb",
+          "name": "Increase the system volume by one step",
+          "request": {
+            "name": "Increase the system volume by one step",
+            "description": {
+              "content": "Increase the volume of the designated system by one non-configurable step of 5% of the volume range. If the current volume is closer to 100% than the step, it is set to 100%; if it is already 100% the request still succeeds. Minimal firmware: DOS >= 2.14.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "systems",
+                ":systemId",
+                "sources",
+                "current",
+                "soundControl",
+                "volumeUp"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "current",
+                  "key": "systemId",
+                  "description": "(Required) System identifier. The only value supported today is `current`, which refers to the system of the dispatcher."
+                },
+                {
+                  "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                  "type": "any",
+                  "value": "{{deviceAddress}}",
+                  "key": "deviceAddress"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "8122defd-50a2-46b1-b08e-2cc76b0b90f5",
+              "name": "Success (an empty JSON object) or a regular error. Devialet returns regular errors with HTTP status 200 and an `error` object in the body.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "systems",
+                    ":systemId",
+                    "sources",
+                    "current",
+                    "soundControl",
+                    "volumeUp"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "current",
+                      "key": "systemId",
+                      "description": "(Required) System identifier. The only value supported today is `current`, which refers to the system of the dispatcher."
+                    },
+                    {
+                      "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                      "type": "any",
+                      "value": "{{deviceAddress}}",
+                      "key": "deviceAddress"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "fe4ff020-c565-48fc-8c15-52cb9e556548",
+              "name": "Malformed JSON request. The message body is empty.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "systems",
+                    ":systemId",
+                    "sources",
+                    "current",
+                    "soundControl",
+                    "volumeUp"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "current",
+                      "key": "systemId",
+                      "description": "(Required) System identifier. The only value supported today is `current`, which refers to the system of the dispatcher."
+                    },
+                    {
+                      "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                      "type": "any",
+                      "value": "{{deviceAddress}}",
+                      "key": "deviceAddress"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "6d65472a-1aa1-4f58-9a7a-c0c1f31d8d4c",
+              "name": "Non-existing endpoint — for example a `/systems/...` or `/groups/...` request performed against a non-speaker accessory. The message body is empty.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "systems",
+                    ":systemId",
+                    "sources",
+                    "current",
+                    "soundControl",
+                    "volumeUp"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "current",
+                      "key": "systemId",
+                      "description": "(Required) System identifier. The only value supported today is `current`, which refers to the system of the dispatcher."
+                    },
+                    {
+                      "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                      "type": "any",
+                      "value": "{{deviceAddress}}",
+                      "key": "deviceAddress"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "6a967f19-e317-4fa7-ab07-ec1f4179f4a9",
+              "name": "Invalid or missing `Content-Type` header on a POST request. The only allowed value is `application/json`.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "systems",
+                    ":systemId",
+                    "sources",
+                    "current",
+                    "soundControl",
+                    "volumeUp"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "current",
+                      "key": "systemId",
+                      "description": "(Required) System identifier. The only value supported today is `current`, which refers to the system of the dispatcher."
+                    },
+                    {
+                      "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                      "type": "any",
+                      "value": "{{deviceAddress}}",
+                      "key": "deviceAddress"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Unsupported Media Type",
+              "code": 415,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "e1ae8426-01b9-4b62-a9fe-332ce48c4510",
+              "name": "Unexpected internal error. The body, when present, follows the regular error format, but its content is not part of the officially supported API.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "systems",
+                    ":systemId",
+                    "sources",
+                    "current",
+                    "soundControl",
+                    "volumeUp"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "current",
+                      "key": "systemId",
+                      "description": "(Required) System identifier. The only value supported today is `current`, which refers to the system of the dispatcher."
+                    },
+                    {
+                      "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                      "type": "any",
+                      "value": "{{deviceAddress}}",
+                      "key": "deviceAddress"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"string\",\n    \"details\": {\n      \"key_0\": 2185.036258529649,\n      \"key_1\": 6065.458113541415\n    },\n    \"message\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "9ce86ebe-8e8a-4ba4-8687-fb26a50b5c5f",
+          "name": "Decrease the system volume by one step",
+          "request": {
+            "name": "Decrease the system volume by one step",
+            "description": {
+              "content": "Decrease the volume of the designated system by one non-configurable step of 5% of the volume range. If the current volume is closer to 0% than the step, it is set to 0%; if it is already 0% the request still succeeds. Minimal firmware: DOS >= 2.14.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "systems",
+                ":systemId",
+                "sources",
+                "current",
+                "soundControl",
+                "volumeDown"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "current",
+                  "key": "systemId",
+                  "description": "(Required) System identifier. The only value supported today is `current`, which refers to the system of the dispatcher."
+                },
+                {
+                  "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                  "type": "any",
+                  "value": "{{deviceAddress}}",
+                  "key": "deviceAddress"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "064979f0-e79d-47c9-91cb-7b3b9f9b3f48",
+              "name": "Success (an empty JSON object) or a regular error. Devialet returns regular errors with HTTP status 200 and an `error` object in the body.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "systems",
+                    ":systemId",
+                    "sources",
+                    "current",
+                    "soundControl",
+                    "volumeDown"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "current",
+                      "key": "systemId",
+                      "description": "(Required) System identifier. The only value supported today is `current`, which refers to the system of the dispatcher."
+                    },
+                    {
+                      "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                      "type": "any",
+                      "value": "{{deviceAddress}}",
+                      "key": "deviceAddress"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c35414b3-00b4-4142-a5d9-8b63fc511a10",
+              "name": "Malformed JSON request. The message body is empty.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "systems",
+                    ":systemId",
+                    "sources",
+                    "current",
+                    "soundControl",
+                    "volumeDown"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "current",
+                      "key": "systemId",
+                      "description": "(Required) System identifier. The only value supported today is `current`, which refers to the system of the dispatcher."
+                    },
+                    {
+                      "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                      "type": "any",
+                      "value": "{{deviceAddress}}",
+                      "key": "deviceAddress"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "6d30644f-43f0-41e7-b173-a13674cb8daa",
+              "name": "Non-existing endpoint — for example a `/systems/...` or `/groups/...` request performed against a non-speaker accessory. The message body is empty.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "systems",
+                    ":systemId",
+                    "sources",
+                    "current",
+                    "soundControl",
+                    "volumeDown"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "current",
+                      "key": "systemId",
+                      "description": "(Required) System identifier. The only value supported today is `current`, which refers to the system of the dispatcher."
+                    },
+                    {
+                      "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                      "type": "any",
+                      "value": "{{deviceAddress}}",
+                      "key": "deviceAddress"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "3d49f14c-729e-4341-a85c-667363bdd0e0",
+              "name": "Invalid or missing `Content-Type` header on a POST request. The only allowed value is `application/json`.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "systems",
+                    ":systemId",
+                    "sources",
+                    "current",
+                    "soundControl",
+                    "volumeDown"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "current",
+                      "key": "systemId",
+                      "description": "(Required) System identifier. The only value supported today is `current`, which refers to the system of the dispatcher."
+                    },
+                    {
+                      "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                      "type": "any",
+                      "value": "{{deviceAddress}}",
+                      "key": "deviceAddress"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Unsupported Media Type",
+              "code": 415,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "f8dabf6c-064d-433e-9bd3-28412cb75bba",
+              "name": "Unexpected internal error. The body, when present, follows the regular error format, but its content is not part of the officially supported API.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "systems",
+                    ":systemId",
+                    "sources",
+                    "current",
+                    "soundControl",
+                    "volumeDown"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "current",
+                      "key": "systemId",
+                      "description": "(Required) System identifier. The only value supported today is `current`, which refers to the system of the dispatcher."
+                    },
+                    {
+                      "description": "IP address or mDNS hostname of a Devialet device on the local network.",
+                      "type": "any",
+                      "value": "{{deviceAddress}}",
+                      "key": "deviceAddress"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"string\",\n    \"details\": {\n      \"key_0\": 2185.036258529649,\n      \"key_1\": 6065.458113541415\n    },\n    \"message\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "description": {
+        "content": "IP address or mDNS hostname of a Devialet device on the local network.",
+        "type": "text/plain"
+      },
+      "type": "any",
+      "value": "192.168.1.20",
+      "key": "deviceAddress"
+    },
+    {
+      "type": "string",
+      "value": "http://{{deviceAddress}}/ipcontrol/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "4e0edc8e-7a9c-4a6e-bf60-640d5d943e33",
+    "name": "Devialet IP Control Sound Control API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Devialet IP Control API is an unauthenticated HTTP API served by Devialet devices themselves on the local network. Starting with DOS 2.14 firmware, the Phantom range (Phantom I, Phantom II, and the Arch and Dialog accessories) exposes device, system, and group state plus playback, volume, equalizer, night-mode, Bluetooth pairing, and power/restart/factory-reset commands over plain HTTP on port 80 under the `/ipcontrol/v1` path prefix. Devices are discovered with mDNS/DNS-SD: they register `_http._tcp` service instances whose TXT record carries `manufacturer=Devialet`, `ipControlVersion=1`, and `path=/ipcontrol/v1`. Queries use GET and are guaranteed not to change device state; commands use POST and require `Content-Type: application/json`. Regular (non-transport) errors are returned inside a `200 OK` response as an `error` object rather than as an HTTP error status.\n\nContact Support:\n Name: Devialet Help Center",
+      "type": "text/plain"
+    }
+  }
+}

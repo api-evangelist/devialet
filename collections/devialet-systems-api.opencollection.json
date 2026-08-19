@@ -1,0 +1,301 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Devialet IP Control Systems API",
+    "version": "1"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Systems",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get system information",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://{deviceAddress}/ipcontrol/v1/systems/:systemId",
+            "params": [
+              {
+                "name": "systemId",
+                "value": "",
+                "type": "path",
+                "description": "System identifier. The only value supported today is `current`, which refers to the system of the dispatcher."
+              }
+            ]
+          },
+          "docs": "Query general information pertaining to the designated system. For non-speaker accessories such as Dialog or Arch, use `getDevice` instead. Minimal firmware: DOS >= 2.14 (DOS >= 2.16 for `availableFeatures`)."
+        },
+        {
+          "info": {
+            "name": "Get the current system volume",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://{deviceAddress}/ipcontrol/v1/systems/:systemId/sources/current/soundControl/volume",
+            "params": [
+              {
+                "name": "systemId",
+                "value": "",
+                "type": "path",
+                "description": "System identifier. The only value supported today is `current`, which refers to the system of the dispatcher."
+              }
+            ]
+          },
+          "docs": "Query the current volume of the designated system, in percent (0-100). All devices in the same system share the same volume. Minimal firmware: DOS >= 2.14."
+        },
+        {
+          "info": {
+            "name": "Set the system volume",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{deviceAddress}/ipcontrol/v1/systems/:systemId/sources/current/soundControl/volume",
+            "params": [
+              {
+                "name": "systemId",
+                "value": "",
+                "type": "path",
+                "description": "System identifier. The only value supported today is `current`, which refers to the system of the dispatcher."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Set the current volume of the designated system, in percent (0-100). All volume commands unmute the current source but do not change `playingState`. Values outside the range report the `InvalidValue` error code. Minimal firmware: DOS >= 2.14."
+        },
+        {
+          "info": {
+            "name": "Increase the system volume by one step",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{deviceAddress}/ipcontrol/v1/systems/:systemId/sources/current/soundControl/volumeUp",
+            "params": [
+              {
+                "name": "systemId",
+                "value": "",
+                "type": "path",
+                "description": "System identifier. The only value supported today is `current`, which refers to the system of the dispatcher."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Increase the volume of the designated system by one non-configurable step of 5% of the volume range. If the current volume is closer to 100% than the step, it is set to 100%; if it is already 100% the request still succeeds. Minimal firmware: DOS >= 2.14."
+        },
+        {
+          "info": {
+            "name": "Decrease the system volume by one step",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{deviceAddress}/ipcontrol/v1/systems/:systemId/sources/current/soundControl/volumeDown",
+            "params": [
+              {
+                "name": "systemId",
+                "value": "",
+                "type": "path",
+                "description": "System identifier. The only value supported today is `current`, which refers to the system of the dispatcher."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Decrease the volume of the designated system by one non-configurable step of 5% of the volume range. If the current volume is closer to 0% than the step, it is set to 0%; if it is already 0% the request still succeeds. Minimal firmware: DOS >= 2.14."
+        },
+        {
+          "info": {
+            "name": "Get the equalizer configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://{deviceAddress}/ipcontrol/v1/systems/:systemId/settings/audio/equalizer",
+            "params": [
+              {
+                "name": "systemId",
+                "value": "",
+                "type": "path",
+                "description": "System identifier. The only value supported today is `current`, which refers to the system of the dispatcher."
+              }
+            ]
+          },
+          "docs": "Query the equalizer preset, current per-band equalization, stored custom equalization, authorized gain range, and the list of available presets for the designated system. Minimal firmware: DOS >= 2.16."
+        },
+        {
+          "info": {
+            "name": "Set the equalizer preset and custom gains",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{deviceAddress}/ipcontrol/v1/systems/:systemId/settings/audio/equalizer",
+            "params": [
+              {
+                "name": "systemId",
+                "value": "",
+                "type": "path",
+                "description": "System identifier. The only value supported today is `current`, which refers to the system of the dispatcher."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Select an equalizer preset and optionally update the stored custom per-band gains. Gains are rounded to the nearest authorized multiple of `stepPrecision`; out-of-bounds values report `InvalidValue`. `customEqualization` may be omitted, in which case the stored custom gains are left unchanged. If the system leader is absent, `SystemLeaderAbsent` is reported. If the parameters already match the current state the call succeeds. Minimal firmware: DOS >= 2.16."
+        },
+        {
+          "info": {
+            "name": "Get the night-mode setting",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://{deviceAddress}/ipcontrol/v1/systems/:systemId/settings/audio/nightMode",
+            "params": [
+              {
+                "name": "systemId",
+                "value": "",
+                "type": "path",
+                "description": "System identifier. The only value supported today is `current`, which refers to the system of the dispatcher."
+              }
+            ]
+          },
+          "docs": "Query the night-mode audio rendering setting for the designated system. Minimal firmware: DOS >= 2.16."
+        },
+        {
+          "info": {
+            "name": "Set the night-mode setting",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{deviceAddress}/ipcontrol/v1/systems/:systemId/settings/audio/nightMode",
+            "params": [
+              {
+                "name": "systemId",
+                "value": "",
+                "type": "path",
+                "description": "System identifier. The only value supported today is `current`, which refers to the system of the dispatcher."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Turn night-mode audio rendering on or off for the designated system. If the selection already matches the current state the call succeeds. If the system leader is absent, `SystemLeaderAbsent` is reported. Minimal firmware: DOS >= 2.16."
+        },
+        {
+          "info": {
+            "name": "Start Bluetooth advertising",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{deviceAddress}/ipcontrol/v1/systems/:systemId/bluetooth/startAdvertising",
+            "params": [
+              {
+                "name": "systemId",
+                "value": "",
+                "type": "path",
+                "description": "System identifier. The only value supported today is `current`, which refers to the system of the dispatcher."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Make the designated system discoverable for Bluetooth pairing. Advertising turns off automatically after one minute or on a successful Bluetooth connection; re-issuing the command resets the timeout to one minute. If the advertising device cannot be reached by the dispatcher, `UnreachableDevice` is reported. Minimal firmware: DOS >= 2.16."
+        },
+        {
+          "info": {
+            "name": "Power off every device in the system",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{deviceAddress}/ipcontrol/v1/systems/:systemId/powerOff",
+            "params": [
+              {
+                "name": "systemId",
+                "value": "",
+                "type": "path",
+                "description": "System identifier. The only value supported today is `current`, which refers to the system of the dispatcher."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Turn off all devices of the designated system. Exiting OFF mode is only possible by pressing a physical button on each device. Minimal firmware: DOS >= 2.16."
+        },
+        {
+          "info": {
+            "name": "Restart every device in the system",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{deviceAddress}/ipcontrol/v1/systems/:systemId/restart",
+            "params": [
+              {
+                "name": "systemId",
+                "value": "",
+                "type": "path",
+                "description": "System identifier. The only value supported today is `current`, which refers to the system of the dispatcher."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Reboot all devices of the designated system. The devices become unresponsive during the reboot. Minimal firmware: DOS >= 2.16."
+        },
+        {
+          "info": {
+            "name": "Reset every device in the system to factory settings",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{deviceAddress}/ipcontrol/v1/systems/:systemId/resetToFactorySettings",
+            "params": [
+              {
+                "name": "systemId",
+                "value": "",
+                "type": "path",
+                "description": "System identifier. The only value supported today is `current`, which refers to the system of the dispatcher."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Reset all devices of the designated system to factory settings and reboot them. This erases all network credentials — unless the devices are connected by Ethernet they become inaccessible. It does not roll back the firmware version. Minimal firmware: DOS >= 2.16."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -5,214 +5,207 @@ source: openapi/devialet-ip-control-openapi.yml
 search_result:
   official_server: false
   searched:
-    - Devialet Help Center and developer-facing documentation
-    - github.com/devialet (25 repositories, all dependency forks)
-    - npm registry (devialet, devialet-phantom, node-devialet)
-    - PyPI (devialet, python-devialet)
-  finding: >-
-    Devialet publishes no hosted or local MCP server. This is a DERIVED candidate tool surface
-    mapped one-to-one onto the operations Devialet documents in its IP Control reference. It is a
-    design proposal by API Evangelist, not a Devialet artifact, and nothing here is running.
+  - Devialet Help Center and developer-facing documentation
+  - github.com/devialet (25 repositories, all dependency forks)
+  - npm registry (devialet, devialet-phantom, node-devialet)
+  - PyPI (devialet, python-devialet)
+  finding: Devialet publishes no hosted or local MCP server. This is a DERIVED candidate tool surface
+    mapped one-to-one onto the operations Devialet documents in its IP Control reference. It is a design
+    proposal by API Evangelist, not a Devialet artifact, and nothing here is running.
 server:
   name: devialet-ip-control
   transport: stdio
   url: null
-  note: >-
-    Any real implementation would have to run locally. The IP Control API has no internet host —
-    it is served by the customer's speakers on their LAN — so a hosted remote MCP server is not
-    possible without a bridge inside the network. A stdio server on the same LAN, performing mDNS
-    discovery and holding the resolved device address, is the natural shape.
+  note: Any real implementation would have to run locally. The IP Control API has no internet host — it
+    is served by the customer's speakers on their LAN — so a hosted remote MCP server is not possible
+    without a bridge inside the network. A stdio server on the same LAN, performing mDNS discovery and
+    holding the resolved device address, is the natural shape.
   required_context:
-    - >-
-      Device address, resolved via mDNS/DNS-SD (_http._tcp, TXT keys manufacturer=Devialet and
-      ipControlVersion=1) or configured as a fixed IP.
-    - >-
-      Firmware version from getDevice — DOS 2.16 gates the equalizer, night-mode, Bluetooth, and
-      power tools.
+  - Device address, resolved via mDNS/DNS-SD (_http._tcp, TXT keys manufacturer=Devialet and ipControlVersion=1)
+    or configured as a fixed IP.
+  - Firmware version from getDevice — DOS 2.16 gates the equalizer, night-mode, Bluetooth, and power tools.
 auth:
-  methods: [none]
-  note: >-
-    The upstream API requires no credentials. An MCP server fronting it should treat LAN
-    reachability, not a token, as the trust boundary, and should gate the destructive tools behind
-    explicit human confirmation.
+  methods:
+  - none
+  note: The upstream API requires no credentials. An MCP server fronting it should treat LAN reachability,
+    not a token, as the trust boundary, and should gate the destructive tools behind explicit human confirmation.
 tool_count: 25
 tools:
-  - name: get_device
-    category: discovery
-    description: Get device identifiers, model, firmware version, serial number, role, and name.
-    source_operation: openapi/devialet-ip-control-openapi.yml#getDevice
-    read_only: true
-  - name: get_system
-    category: discovery
-    description: Get system identifiers, name, and available features (equalizer, nightMode).
-    source_operation: openapi/devialet-ip-control-openapi.yml#getSystem
-    read_only: true
-  - name: list_group_sources
-    category: discovery
-    description: List the audio sources currently available to the group.
-    source_operation: openapi/devialet-ip-control-openapi.yml#listGroupSources
-    read_only: true
-  - name: get_group_current_source
-    category: playback
-    description: >-
-      Get current playback state — source, playingState, muteState, track metadata, and the
-      operations currently available.
-    source_operation: openapi/devialet-ip-control-openapi.yml#getGroupCurrentSource
-    read_only: true
-  - name: get_system_volume
-    category: sound
-    description: Get the current system volume as a percentage.
-    source_operation: openapi/devialet-ip-control-openapi.yml#getSystemVolume
-    read_only: true
-  - name: set_system_volume
-    category: sound
-    description: Set the system volume to an absolute percentage (0-100).
-    source_operation: openapi/devialet-ip-control-openapi.yml#setSystemVolume
-    read_only: false
-    idempotent: true
-  - name: system_volume_up
-    category: sound
-    description: Increase the system volume by one 5% step.
-    source_operation: openapi/devialet-ip-control-openapi.yml#systemVolumeUp
-    read_only: false
-    idempotent: false
-  - name: system_volume_down
-    category: sound
-    description: Decrease the system volume by one 5% step.
-    source_operation: openapi/devialet-ip-control-openapi.yml#systemVolumeDown
-    read_only: false
-    idempotent: false
-  - name: get_system_equalizer
-    category: audio_settings
-    description: Get the equalizer preset, per-band gains, gain range, and available presets.
-    source_operation: openapi/devialet-ip-control-openapi.yml#getSystemEqualizer
-    read_only: true
-    requires_firmware: 'DOS >= 2.16'
-  - name: set_system_equalizer
-    category: audio_settings
-    description: Select an equalizer preset and optionally set the stored custom per-band gains.
-    source_operation: openapi/devialet-ip-control-openapi.yml#setSystemEqualizer
-    read_only: false
-    idempotent: true
-    requires_firmware: 'DOS >= 2.16'
-  - name: get_system_night_mode
-    category: audio_settings
-    description: Get the night-mode audio rendering setting.
-    source_operation: openapi/devialet-ip-control-openapi.yml#getSystemNightMode
-    read_only: true
-    requires_firmware: 'DOS >= 2.16'
-  - name: set_system_night_mode
-    category: audio_settings
-    description: Turn night-mode audio rendering on or off.
-    source_operation: openapi/devialet-ip-control-openapi.yml#setSystemNightMode
-    read_only: false
-    idempotent: true
-    requires_firmware: 'DOS >= 2.16'
-  - name: play_group_source
-    category: playback
-    description: Start or resume playback of a designated source, selecting it if it is not current.
-    source_operation: openapi/devialet-ip-control-openapi.yml#playGroupSource
-    read_only: false
-    idempotent: true
-    async_effects: true
-  - name: pause_group_playback
-    category: playback
-    description: Pause the current source (or mute it if the source cannot semantically pause).
-    source_operation: openapi/devialet-ip-control-openapi.yml#pauseGroupPlayback
-    read_only: false
-    idempotent: true
-  - name: mute_group_playback
-    category: playback
-    description: Mute the current source.
-    source_operation: openapi/devialet-ip-control-openapi.yml#muteGroupPlayback
-    read_only: false
-    idempotent: true
-  - name: unmute_group_playback
-    category: playback
-    description: Unmute the current source.
-    source_operation: openapi/devialet-ip-control-openapi.yml#unmuteGroupPlayback
-    read_only: false
-    idempotent: true
-  - name: next_group_track
-    category: playback
-    description: Skip to the next track. Check availableOperations first.
-    source_operation: openapi/devialet-ip-control-openapi.yml#nextGroupTrack
-    read_only: false
-    idempotent: false
-  - name: previous_group_track
-    category: playback
-    description: Skip to the previous track. Check availableOperations first.
-    source_operation: openapi/devialet-ip-control-openapi.yml#previousGroupTrack
-    read_only: false
-    idempotent: false
-  - name: start_system_bluetooth_advertising
-    category: pairing
-    description: Make the system discoverable for Bluetooth pairing for one minute.
-    source_operation: openapi/devialet-ip-control-openapi.yml#startSystemBluetoothAdvertising
-    read_only: false
-    idempotent: true
-    requires_firmware: 'DOS >= 2.16'
-  - name: power_off_device
-    category: power
-    description: Turn off a single device. Cannot be undone remotely.
-    source_operation: openapi/devialet-ip-control-openapi.yml#powerOffDevice
-    read_only: false
-    consequence: physical
-    human_confirmation: recommended
-    requires_firmware: 'DOS >= 2.16'
-  - name: restart_device
-    category: power
-    description: Reboot a single device.
-    source_operation: openapi/devialet-ip-control-openapi.yml#restartDevice
-    read_only: false
-    consequence: physical
-    requires_firmware: 'DOS >= 2.16'
-  - name: reset_device_to_factory_settings
-    category: power
-    description: Reset a single device to factory settings. Irreversible; erases network credentials.
-    source_operation: openapi/devialet-ip-control-openapi.yml#resetDeviceToFactorySettings
-    read_only: false
-    consequence: irreversible
-    human_confirmation: required
-    requires_firmware: 'DOS >= 2.16'
-  - name: power_off_system
-    category: power
-    description: Turn off every device in the system. Cannot be undone remotely.
-    source_operation: openapi/devialet-ip-control-openapi.yml#powerOffSystem
-    read_only: false
-    consequence: physical
-    human_confirmation: recommended
-    requires_firmware: 'DOS >= 2.16'
-  - name: restart_system
-    category: power
-    description: Reboot every device in the system.
-    source_operation: openapi/devialet-ip-control-openapi.yml#restartSystem
-    read_only: false
-    consequence: physical
-    requires_firmware: 'DOS >= 2.16'
-  - name: reset_system_to_factory_settings
-    category: power
-    description: >-
-      Reset every device in the system to factory settings. Irreversible; erases network
-      credentials on all of them.
-    source_operation: openapi/devialet-ip-control-openapi.yml#resetSystemToFactorySettings
-    read_only: false
-    consequence: irreversible
-    human_confirmation: required
-    requires_firmware: 'DOS >= 2.16'
+- name: get_device
+  category: discovery
+  description: Get device identifiers, model, firmware version, serial number, role, and name.
+  source_operation: openapi/devialet-ip-control-openapi.yml#getDevice
+  read_only: true
+- name: get_system
+  category: discovery
+  description: Get system identifiers, name, and available features (equalizer, nightMode).
+  source_operation: openapi/devialet-ip-control-openapi.yml#getSystem
+  read_only: true
+- name: list_group_sources
+  category: discovery
+  description: List the audio sources currently available to the group.
+  source_operation: openapi/devialet-ip-control-openapi.yml#listGroupSources
+  read_only: true
+- name: get_group_current_source
+  category: playback
+  description: Get current playback state — source, playingState, muteState, track metadata, and the operations
+    currently available.
+  source_operation: openapi/devialet-ip-control-openapi.yml#getGroupCurrentSource
+  read_only: true
+- name: get_system_volume
+  category: sound
+  description: Get the current system volume as a percentage.
+  source_operation: openapi/devialet-ip-control-openapi.yml#getSystemVolume
+  read_only: true
+- name: set_system_volume
+  category: sound
+  description: Set the system volume to an absolute percentage (0-100).
+  source_operation: openapi/devialet-ip-control-openapi.yml#setSystemVolume
+  read_only: false
+  idempotent: true
+- name: system_volume_up
+  category: sound
+  description: Increase the system volume by one 5% step.
+  source_operation: openapi/devialet-ip-control-openapi.yml#systemVolumeUp
+  read_only: false
+  idempotent: false
+- name: system_volume_down
+  category: sound
+  description: Decrease the system volume by one 5% step.
+  source_operation: openapi/devialet-ip-control-openapi.yml#systemVolumeDown
+  read_only: false
+  idempotent: false
+- name: get_system_equalizer
+  category: audio_settings
+  description: Get the equalizer preset, per-band gains, gain range, and available presets.
+  source_operation: openapi/devialet-ip-control-openapi.yml#getSystemEqualizer
+  read_only: true
+  requires_firmware: DOS >= 2.16
+- name: set_system_equalizer
+  category: audio_settings
+  description: Select an equalizer preset and optionally set the stored custom per-band gains.
+  source_operation: openapi/devialet-ip-control-openapi.yml#setSystemEqualizer
+  read_only: false
+  idempotent: true
+  requires_firmware: DOS >= 2.16
+- name: get_system_night_mode
+  category: audio_settings
+  description: Get the night-mode audio rendering setting.
+  source_operation: openapi/devialet-ip-control-openapi.yml#getSystemNightMode
+  read_only: true
+  requires_firmware: DOS >= 2.16
+- name: set_system_night_mode
+  category: audio_settings
+  description: Turn night-mode audio rendering on or off.
+  source_operation: openapi/devialet-ip-control-openapi.yml#setSystemNightMode
+  read_only: false
+  idempotent: true
+  requires_firmware: DOS >= 2.16
+- name: play_group_source
+  category: playback
+  description: Start or resume playback of a designated source, selecting it if it is not current.
+  source_operation: openapi/devialet-ip-control-openapi.yml#playGroupSource
+  read_only: false
+  idempotent: true
+  async_effects: true
+- name: pause_group_playback
+  category: playback
+  description: Pause the current source (or mute it if the source cannot semantically pause).
+  source_operation: openapi/devialet-ip-control-openapi.yml#pauseGroupPlayback
+  read_only: false
+  idempotent: true
+- name: mute_group_playback
+  category: playback
+  description: Mute the current source.
+  source_operation: openapi/devialet-ip-control-openapi.yml#muteGroupPlayback
+  read_only: false
+  idempotent: true
+- name: unmute_group_playback
+  category: playback
+  description: Unmute the current source.
+  source_operation: openapi/devialet-ip-control-openapi.yml#unmuteGroupPlayback
+  read_only: false
+  idempotent: true
+- name: next_group_track
+  category: playback
+  description: Skip to the next track. Check availableOperations first.
+  source_operation: openapi/devialet-ip-control-openapi.yml#nextGroupTrack
+  read_only: false
+  idempotent: false
+- name: previous_group_track
+  category: playback
+  description: Skip to the previous track. Check availableOperations first.
+  source_operation: openapi/devialet-ip-control-openapi.yml#previousGroupTrack
+  read_only: false
+  idempotent: false
+- name: start_system_bluetooth_advertising
+  category: pairing
+  description: Make the system discoverable for Bluetooth pairing for one minute.
+  source_operation: openapi/devialet-ip-control-openapi.yml#startSystemBluetoothAdvertising
+  read_only: false
+  idempotent: true
+  requires_firmware: DOS >= 2.16
+- name: power_off_device
+  category: power
+  description: Turn off a single device. Cannot be undone remotely.
+  source_operation: openapi/devialet-ip-control-openapi.yml#powerOffDevice
+  read_only: false
+  consequence: physical
+  human_confirmation: recommended
+  requires_firmware: DOS >= 2.16
+- name: restart_device
+  category: power
+  description: Reboot a single device.
+  source_operation: openapi/devialet-ip-control-openapi.yml#restartDevice
+  read_only: false
+  consequence: physical
+  requires_firmware: DOS >= 2.16
+- name: reset_device_to_factory_settings
+  category: power
+  description: Reset a single device to factory settings. Irreversible; erases network credentials.
+  source_operation: openapi/devialet-ip-control-openapi.yml#resetDeviceToFactorySettings
+  read_only: false
+  consequence: irreversible
+  human_confirmation: required
+  requires_firmware: DOS >= 2.16
+- name: power_off_system
+  category: power
+  description: Turn off every device in the system. Cannot be undone remotely.
+  source_operation: openapi/devialet-ip-control-openapi.yml#powerOffSystem
+  read_only: false
+  consequence: physical
+  human_confirmation: recommended
+  requires_firmware: DOS >= 2.16
+- name: restart_system
+  category: power
+  description: Reboot every device in the system.
+  source_operation: openapi/devialet-ip-control-openapi.yml#restartSystem
+  read_only: false
+  consequence: physical
+  requires_firmware: DOS >= 2.16
+- name: reset_system_to_factory_settings
+  category: power
+  description: Reset every device in the system to factory settings. Irreversible; erases network credentials
+    on all of them.
+  source_operation: openapi/devialet-ip-control-openapi.yml#resetSystemToFactorySettings
+  read_only: false
+  consequence: irreversible
+  human_confirmation: required
+  requires_firmware: DOS >= 2.16
 implementation_notes:
-  - >-
-    Every tool's input schema is the backing operation's path parameters plus request body in
-    openapi/devialet-ip-control-openapi.yml. Today the only supported identifier value is the
-    literal `current`, so most tools take no arguments beyond the device address held by the
-    server.
-  - >-
-    Tools must not treat HTTP 200 as success. The upstream API returns application errors inside a
-    200 body as {"error":{"code":...}} — see errors/devialet-error-codes.yml. An MCP server that
-    checks only the status code will report failures as successes.
-  - >-
-    next_group_track and previous_group_track should be gated on availableOperations from
-    get_group_current_source, which is the only reliable signal for whether they will work.
-  - >-
-    There is no power-on tool because the API has no power-on endpoint. Anything that turns a
-    device off is one-way over the network.
+- Every tool's input schema is the backing operation's path parameters plus request body in openapi/devialet-ip-control-openapi.yml.
+  Today the only supported identifier value is the literal `current`, so most tools take no arguments
+  beyond the device address held by the server.
+- Tools must not treat HTTP 200 as success. The upstream API returns application errors inside a 200 body
+  as {"error":{"code":...}} — see errors/devialet-error-codes.yml. An MCP server that checks only the
+  status code will report failures as successes.
+- next_group_track and previous_group_track should be gated on availableOperations from get_group_current_source,
+  which is the only reliable signal for whether they will work.
+- There is no power-on tool because the API has no power-on endpoint. Anything that turns a device off
+  is one-way over the network.
+deployment:
+  mode: none
+  verified: derived
+  tools: 25
+  checked: '2026-08-12'
+  source: catalog MCP census

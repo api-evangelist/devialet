@@ -1,0 +1,106 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Devialet IP Control Sound Control API",
+    "version": "1"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Sound Control",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get the current system volume",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://{deviceAddress}/ipcontrol/v1/systems/:systemId/sources/current/soundControl/volume",
+            "params": [
+              {
+                "name": "systemId",
+                "value": "",
+                "type": "path",
+                "description": "System identifier. The only value supported today is `current`, which refers to the system of the dispatcher."
+              }
+            ]
+          },
+          "docs": "Query the current volume of the designated system, in percent (0-100). All devices in the same system share the same volume. Minimal firmware: DOS >= 2.14."
+        },
+        {
+          "info": {
+            "name": "Set the system volume",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{deviceAddress}/ipcontrol/v1/systems/:systemId/sources/current/soundControl/volume",
+            "params": [
+              {
+                "name": "systemId",
+                "value": "",
+                "type": "path",
+                "description": "System identifier. The only value supported today is `current`, which refers to the system of the dispatcher."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Set the current volume of the designated system, in percent (0-100). All volume commands unmute the current source but do not change `playingState`. Values outside the range report the `InvalidValue` error code. Minimal firmware: DOS >= 2.14."
+        },
+        {
+          "info": {
+            "name": "Increase the system volume by one step",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{deviceAddress}/ipcontrol/v1/systems/:systemId/sources/current/soundControl/volumeUp",
+            "params": [
+              {
+                "name": "systemId",
+                "value": "",
+                "type": "path",
+                "description": "System identifier. The only value supported today is `current`, which refers to the system of the dispatcher."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Increase the volume of the designated system by one non-configurable step of 5% of the volume range. If the current volume is closer to 100% than the step, it is set to 100%; if it is already 100% the request still succeeds. Minimal firmware: DOS >= 2.14."
+        },
+        {
+          "info": {
+            "name": "Decrease the system volume by one step",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{deviceAddress}/ipcontrol/v1/systems/:systemId/sources/current/soundControl/volumeDown",
+            "params": [
+              {
+                "name": "systemId",
+                "value": "",
+                "type": "path",
+                "description": "System identifier. The only value supported today is `current`, which refers to the system of the dispatcher."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Decrease the volume of the designated system by one non-configurable step of 5% of the volume range. If the current volume is closer to 0% than the step, it is set to 0%; if it is already 0% the request still succeeds. Minimal firmware: DOS >= 2.14."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

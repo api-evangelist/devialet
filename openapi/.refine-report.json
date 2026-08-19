@@ -1,0 +1,32 @@
+{
+  "provider": "devialet",
+  "sources": [
+    "devialet-audio-settings-api-openapi.yml",
+    "devialet-devices-api-openapi.yml",
+    "devialet-groups-api-openapi.yml",
+    "devialet-playback-api-openapi.yml",
+    "devialet-sound-control-api-openapi.yml",
+    "devialet-systems-api-openapi.yml"
+  ],
+  "outputs": [
+    "devialet-audio-settings-api-openapi.yml",
+    "devialet-devices-api-openapi.yml",
+    "devialet-groups-api-openapi.yml",
+    "devialet-playback-api-openapi.yml",
+    "devialet-sound-control-api-openapi.yml",
+    "devialet-systems-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [
+    "devialet-audio-settings-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "devialet-devices-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "devialet-groups-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "devialet-playback-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "devialet-sound-control-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "devialet-systems-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": []
+}

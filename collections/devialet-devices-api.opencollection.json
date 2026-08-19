@@ -1,0 +1,106 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Devialet IP Control Devices API",
+    "version": "1"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Devices",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get device information",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://{deviceAddress}/ipcontrol/v1/devices/:deviceId",
+            "params": [
+              {
+                "name": "deviceId",
+                "value": "",
+                "type": "path",
+                "description": "Device identifier. The only value supported today is `current`, which refers to the dispatcher — the device that received the request."
+              }
+            ]
+          },
+          "docs": "Query general information pertaining to the designated device — identifiers, model, firmware version, serial number, role, and device name. Minimal firmware: DOS >= 2.14. Also available as a NOTIFICATION channel in a future revision (subscriptions are not yet implemented)."
+        },
+        {
+          "info": {
+            "name": "Power off the device",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{deviceAddress}/ipcontrol/v1/devices/:deviceId/powerOff",
+            "params": [
+              {
+                "name": "deviceId",
+                "value": "",
+                "type": "path",
+                "description": "Device identifier. The only value supported today is `current`, which refers to the dispatcher — the device that received the request."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Turn off the designated device. Exiting OFF mode is only possible by pressing a physical button on the device. Minimal firmware: DOS >= 2.16."
+        },
+        {
+          "info": {
+            "name": "Restart the device",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{deviceAddress}/ipcontrol/v1/devices/:deviceId/restart",
+            "params": [
+              {
+                "name": "deviceId",
+                "value": "",
+                "type": "path",
+                "description": "Device identifier. The only value supported today is `current`, which refers to the dispatcher — the device that received the request."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Reboot the designated device. The device becomes unresponsive during the reboot. Minimal firmware: DOS >= 2.16."
+        },
+        {
+          "info": {
+            "name": "Reset the device to factory settings",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{deviceAddress}/ipcontrol/v1/devices/:deviceId/resetToFactorySettings",
+            "params": [
+              {
+                "name": "deviceId",
+                "value": "",
+                "type": "path",
+                "description": "Device identifier. The only value supported today is `current`, which refers to the dispatcher — the device that received the request."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Reset the designated device to factory settings and reboot it. This erases all network credentials — unless the device is connected by Ethernet it becomes inaccessible. It does not roll back the firmware version. Minimal firmware: DOS >= 2.16."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
