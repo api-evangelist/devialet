@@ -112,6 +112,8 @@ apis:
     https://help.devialet.com/hc/en-us/articles/4415207423378-Phantom-s-documentation-for-piloting-them-via-IP
   baseURL: http://192.168.1.20/ipcontrol/v1
   tags:
+  - Group
+  tags_raw:
   - Groups
   properties:
   - type: OpenAPI
