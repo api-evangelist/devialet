@@ -11,6 +11,18 @@ description: >-
   device, system, and group state plus playback, volume, equalizer, night mode, Bluetooth pairing,
   and power and factory-reset commands, with mDNS/DNS-SD discovery. Devialet also ships certified
   home-automation drivers for Crestron and Control4 alongside the raw API.
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: false
+  label: Hosted service · you call their endpoint
+  confidence: medium
+  source:
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 image: https://assets.devialet.com//media/dvl_media/Visual_Devialet_Phantom_Ultimate_98_dB_Stereo_LP_16_9.png?twic=v1/cover=1.91:1/resize=1200x630
 url: https://raw.githubusercontent.com/api-evangelist/devialet/refs/heads/main/apis.yml
 x-type: company
