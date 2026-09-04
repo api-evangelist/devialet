@@ -23,6 +23,19 @@ deliveryModel:
   - pricing
   generated: '2026-08-28'
   method: derived
+accessModel:
+  pricing: unknown
+  onboarding: unknown
+  trial: false
+  try_now: false
+  public: false
+  label: Unknown
+  confidence: low
+  source:
+  - authentication
+  - security
+  generated: '2026-09-02'
+  method: derived
 image: https://assets.devialet.com//media/dvl_media/Visual_Devialet_Phantom_Ultimate_98_dB_Stereo_LP_16_9.png?twic=v1/cover=1.91:1/resize=1200x630
 url: https://raw.githubusercontent.com/api-evangelist/devialet/refs/heads/main/apis.yml
 x-type: company
@@ -292,8 +305,9 @@ common:
   url: examples/devialet-ip-control-examples.yml
 - type: Overlay
   url: overlays/devialet-ip-control-overlay.yaml
-- type: MCPServer
+- type: X-MCPServerCandidate
   url: mcp/devialet-mcp.yml
+  note: 'Renamed from MCPServer 2026-09-03 (roadmap#247): the manifest self-describes as status: candidate — a tool list derived from the published API contracts, not an existing server. The scorer already read the manifest and reported mcp_server correctly; the MCPServer type was crediting the artifact-type surfaces with a server that does not exist.'
 - type: ToolCrosswalk
   url: mcp/devialet-tool-crosswalk.yml
 - type: AgentSkill
