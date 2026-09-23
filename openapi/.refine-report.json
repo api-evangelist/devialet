@@ -1,12 +1,7 @@
 {
   "provider": "devialet",
   "sources": [
-    "devialet-audio-settings-api-openapi.yml",
-    "devialet-devices-api-openapi.yml",
-    "devialet-groups-api-openapi.yml",
-    "devialet-playback-api-openapi.yml",
-    "devialet-sound-control-api-openapi.yml",
-    "devialet-systems-api-openapi.yml"
+    "_original/devialet-ip-control-openapi.yml"
   ],
   "outputs": [
     "devialet-audio-settings-api-openapi.yml",
@@ -20,13 +15,17 @@
   "errors": [],
   "warnings": [],
   "notes": [
-    "devialet-audio-settings-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "devialet-devices-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "devialet-groups-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "devialet-playback-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "devialet-sound-control-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "devialet-systems-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "devialet-ip-control-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "devialet-ip-control-openapi.yml: multi-axis tagging (6 tags, 6 first tags, 1.60x duplication over 25 operations) \u2014 split on first tag, 15 operations narrowed",
     "apis.yml register: already-registered"
   ],
-  "skipped": []
+  "skipped": [
+    "devialet-audio-settings-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "devialet-devices-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "devialet-groups-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "devialet-playback-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "devialet-sound-control-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "devialet-systems-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }
