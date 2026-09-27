@@ -133,26 +133,15 @@ paths:
         '500':
           $ref: '#/components/responses/InternalError'
 components:
-  requestBodies:
-    NoParameters:
-      required: false
-      description: 'This command takes no parameters. The body may be empty or an empty JSON object (`{}`), but the `Content-Type: application/json` header is mandatory.'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/EmptyObject'
-          examples:
-            empty:
-              value: {}
   responses:
-    UnsupportedMediaType:
-      description: Invalid or missing `Content-Type` header on a POST request. The only allowed value is `application/json`.
     InternalError:
       description: Unexpected internal error. The body, when present, follows the regular error format, but its content is not part of the officially supported API.
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorEnvelope'
+    UnsupportedMediaType:
+      description: Invalid or missing `Content-Type` header on a POST request. The only allowed value is `application/json`.
     EmptyOrError:
       description: Success (an empty JSON object) or a regular error. Devialet returns regular errors with HTTP status 200 and an `error` object in the body.
       content:
@@ -175,21 +164,6 @@ components:
     BadRequest:
       description: Malformed JSON request. The message body is empty.
   schemas:
-    Volume:
-      type: object
-      description: The volume of a system, in percent.
-      required:
-      - volume
-      properties:
-        volume:
-          type: integer
-          minimum: 0
-          maximum: 100
-          description: Current volume of the system, in percent.
-    EmptyObject:
-      type: object
-      description: An empty JSON object.
-      additionalProperties: false
     ErrorEnvelope:
       type: object
       description: The regular error envelope. Returned with HTTP status 200 for application-level errors, and with 500 for unexpected internal errors.
@@ -217,6 +191,21 @@ components:
             message:
               type: string
               description: Debug-only text. Not intended for display to end users or for programmatic processing.
+    Volume:
+      type: object
+      description: The volume of a system, in percent.
+      required:
+      - volume
+      properties:
+        volume:
+          type: integer
+          minimum: 0
+          maximum: 100
+          description: Current volume of the system, in percent.
+    EmptyObject:
+      type: object
+      description: An empty JSON object.
+      additionalProperties: false
   parameters:
     SystemId:
       name: systemId
@@ -228,3 +217,14 @@ components:
         default: current
         examples:
         - current
+  requestBodies:
+    NoParameters:
+      required: false
+      description: 'This command takes no parameters. The body may be empty or an empty JSON object (`{}`), but the `Content-Type: application/json` header is mandatory.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/EmptyObject'
+          examples:
+            empty:
+              value: {}

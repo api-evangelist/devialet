@@ -106,79 +106,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Source'
-    Source:
-      type: object
-      description: An audio source hosted by a device in the installation.
-      required:
-      - sourceId
-      - deviceId
-      - type
-      properties:
-        sourceId:
-          type: string
-          description: Unique source identifier in UUIDv4 format.
-        deviceId:
-          type: string
-          description: Unique identifier of the host device in UUIDv4 format. May be a speaker or an accessory such as Dialog or Arch. For stereo pairs, use this to distinguish left from right inputs.
-        type:
-          type: string
-          description: The source type. Physical sources are `phono`, `line`, `digital_left`, `digital_right` (Arch only), `optical` (Phantom I, Dialog), and `opticaljack` (Phantom II only). Non-physical sources are `spotifyconnect`, `airplay2`, `bluetooth`, `upnp`, and `raat`.
-          enum:
-          - phono
-          - line
-          - digital_left
-          - digital_right
-          - optical
-          - opticaljack
-          - spotifyconnect
-          - airplay2
-          - bluetooth
-          - upnp
-          - raat
-    TrackMetadata:
-      type: object
-      description: Metadata for the current track. Absent when the source provides none; retained while the source is paused. All strings are UTF-8.
-      properties:
-        artist:
-          type: string
-          description: Artist name. Always present, but may be an empty string.
-        album:
-          type: string
-          description: Album name. Always present, but may be an empty string.
-        title:
-          type: string
-          description: Track name. Always present, but may be an empty string.
-        coverArtUrl:
-          type: string
-          format: uri
-          description: URL from which the client can download the cover art image. Absent when the data are not available as a URL.
-    ErrorEnvelope:
-      type: object
-      description: The regular error envelope. Returned with HTTP status 200 for application-level errors, and with 500 for unexpected internal errors.
-      required:
-      - error
-      properties:
-        error:
-          type: object
-          required:
-          - code
-          properties:
-            code:
-              type: string
-              description: A predefined error identifier. Unknown codes must be handled gracefully by the client and shown as a generic error message.
-              examples:
-              - Error
-              - UnreachableDevices
-              - Timeout
-              - NoCurrentSource
-              - InvalidValue
-            details:
-              type: object
-              description: Structured data whose shape depends on the error identifier, for building a localized user-facing message.
-              additionalProperties: true
-            message:
-              type: string
-              description: Debug-only text. Not intended for display to end users or for programmatic processing.
     CurrentSourceState:
       type: object
       description: The current playback state of a group and the capabilities of its current source.
@@ -214,6 +141,79 @@ components:
             - next
             - previous
             - seek
+    ErrorEnvelope:
+      type: object
+      description: The regular error envelope. Returned with HTTP status 200 for application-level errors, and with 500 for unexpected internal errors.
+      required:
+      - error
+      properties:
+        error:
+          type: object
+          required:
+          - code
+          properties:
+            code:
+              type: string
+              description: A predefined error identifier. Unknown codes must be handled gracefully by the client and shown as a generic error message.
+              examples:
+              - Error
+              - UnreachableDevices
+              - Timeout
+              - NoCurrentSource
+              - InvalidValue
+            details:
+              type: object
+              description: Structured data whose shape depends on the error identifier, for building a localized user-facing message.
+              additionalProperties: true
+            message:
+              type: string
+              description: Debug-only text. Not intended for display to end users or for programmatic processing.
+    TrackMetadata:
+      type: object
+      description: Metadata for the current track. Absent when the source provides none; retained while the source is paused. All strings are UTF-8.
+      properties:
+        artist:
+          type: string
+          description: Artist name. Always present, but may be an empty string.
+        album:
+          type: string
+          description: Album name. Always present, but may be an empty string.
+        title:
+          type: string
+          description: Track name. Always present, but may be an empty string.
+        coverArtUrl:
+          type: string
+          format: uri
+          description: URL from which the client can download the cover art image. Absent when the data are not available as a URL.
+    Source:
+      type: object
+      description: An audio source hosted by a device in the installation.
+      required:
+      - sourceId
+      - deviceId
+      - type
+      properties:
+        sourceId:
+          type: string
+          description: Unique source identifier in UUIDv4 format.
+        deviceId:
+          type: string
+          description: Unique identifier of the host device in UUIDv4 format. May be a speaker or an accessory such as Dialog or Arch. For stereo pairs, use this to distinguish left from right inputs.
+        type:
+          type: string
+          description: The source type. Physical sources are `phono`, `line`, `digital_left`, `digital_right` (Arch only), `optical` (Phantom I, Dialog), and `opticaljack` (Phantom II only). Non-physical sources are `spotifyconnect`, `airplay2`, `bluetooth`, `upnp`, and `raat`.
+          enum:
+          - phono
+          - line
+          - digital_left
+          - digital_right
+          - optical
+          - opticaljack
+          - spotifyconnect
+          - airplay2
+          - bluetooth
+          - upnp
+          - raat
   responses:
     InternalError:
       description: Unexpected internal error. The body, when present, follows the regular error format, but its content is not part of the officially supported API.
