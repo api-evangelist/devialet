@@ -155,36 +155,6 @@ paths:
         '500':
           $ref: '#/components/responses/InternalError'
 components:
-  responses:
-    InternalError:
-      description: Unexpected internal error. The body, when present, follows the regular error format, but its content is not part of the officially supported API.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorEnvelope'
-    UnsupportedMediaType:
-      description: Invalid or missing `Content-Type` header on a POST request. The only allowed value is `application/json`.
-    EmptyOrError:
-      description: Success (an empty JSON object) or a regular error. Devialet returns regular errors with HTTP status 200 and an `error` object in the body.
-      content:
-        application/json:
-          schema:
-            oneOf:
-            - $ref: '#/components/schemas/EmptyObject'
-            - $ref: '#/components/schemas/ErrorEnvelope'
-          examples:
-            success:
-              summary: Successful command
-              value: {}
-            regularError:
-              summary: Regular error returned with HTTP 200
-              value:
-                error:
-                  code: UnreachableDevices
-    NotFound:
-      description: Non-existing endpoint — for example a `/systems/...` or `/groups/...` request performed against a non-speaker accessory. The message body is empty.
-    BadRequest:
-      description: Malformed JSON request. The message body is empty.
   schemas:
     System:
       type: object
@@ -242,17 +212,36 @@ components:
       type: object
       description: An empty JSON object.
       additionalProperties: false
-  parameters:
-    SystemId:
-      name: systemId
-      in: path
-      required: true
-      description: System identifier. The only value supported today is `current`, which refers to the system of the dispatcher.
-      schema:
-        type: string
-        default: current
-        examples:
-        - current
+  responses:
+    UnsupportedMediaType:
+      description: Invalid or missing `Content-Type` header on a POST request. The only allowed value is `application/json`.
+    BadRequest:
+      description: Malformed JSON request. The message body is empty.
+    NotFound:
+      description: Non-existing endpoint — for example a `/systems/...` or `/groups/...` request performed against a non-speaker accessory. The message body is empty.
+    EmptyOrError:
+      description: Success (an empty JSON object) or a regular error. Devialet returns regular errors with HTTP status 200 and an `error` object in the body.
+      content:
+        application/json:
+          schema:
+            oneOf:
+            - $ref: '#/components/schemas/EmptyObject'
+            - $ref: '#/components/schemas/ErrorEnvelope'
+          examples:
+            success:
+              summary: Successful command
+              value: {}
+            regularError:
+              summary: Regular error returned with HTTP 200
+              value:
+                error:
+                  code: UnreachableDevices
+    InternalError:
+      description: Unexpected internal error. The body, when present, follows the regular error format, but its content is not part of the officially supported API.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
   requestBodies:
     NoParameters:
       required: false
@@ -264,3 +253,14 @@ components:
           examples:
             empty:
               value: {}
+  parameters:
+    SystemId:
+      name: systemId
+      in: path
+      required: true
+      description: System identifier. The only value supported today is `current`, which refers to the system of the dispatcher.
+      schema:
+        type: string
+        default: current
+        examples:
+        - current
