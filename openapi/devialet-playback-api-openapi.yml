@@ -170,8 +170,12 @@ paths:
           $ref: '#/components/responses/InternalError'
 components:
   responses:
-    UnsupportedMediaType:
-      description: Invalid or missing `Content-Type` header on a POST request. The only allowed value is `application/json`.
+    InternalError:
+      description: Unexpected internal error. The body, when present, follows the regular error format, but its content is not part of the officially supported API.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
     BadRequest:
       description: Malformed JSON request. The message body is empty.
     NotFound:
@@ -193,44 +197,13 @@ components:
               value:
                 error:
                   code: UnreachableDevices
-    InternalError:
-      description: Unexpected internal error. The body, when present, follows the regular error format, but its content is not part of the officially supported API.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorEnvelope'
-  requestBodies:
-    NoParameters:
-      required: false
-      description: 'This command takes no parameters. The body may be empty or an empty JSON object (`{}`), but the `Content-Type: application/json` header is mandatory.'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/EmptyObject'
-          examples:
-            empty:
-              value: {}
-  parameters:
-    GroupId:
-      name: groupId
-      in: path
-      required: true
-      description: Group identifier. The only value supported today is `current`, which refers to the group of the dispatcher.
-      schema:
-        type: string
-        default: current
-        examples:
-        - current
-    SourceId:
-      name: sourceId
-      in: path
-      required: true
-      description: Source identifier in UUIDv4 format, as returned by `listGroupSources`. An unrecognised value results in a 200 response carrying a regular error object, not a 404.
-      schema:
-        type: string
-        examples:
-        - 213a3ed0-1fb9-4da2-bcf4-066da0f7b27e
+    UnsupportedMediaType:
+      description: Invalid or missing `Content-Type` header on a POST request. The only allowed value is `application/json`.
   schemas:
+    EmptyObject:
+      type: object
+      description: An empty JSON object.
+      additionalProperties: false
     ErrorEnvelope:
       type: object
       description: The regular error envelope. Returned with HTTP status 200 for application-level errors, and with 500 for unexpected internal errors.
@@ -258,7 +231,34 @@ components:
             message:
               type: string
               description: Debug-only text. Not intended for display to end users or for programmatic processing.
-    EmptyObject:
-      type: object
-      description: An empty JSON object.
-      additionalProperties: false
+  parameters:
+    GroupId:
+      name: groupId
+      in: path
+      required: true
+      description: Group identifier. The only value supported today is `current`, which refers to the group of the dispatcher.
+      schema:
+        type: string
+        default: current
+        examples:
+        - current
+    SourceId:
+      name: sourceId
+      in: path
+      required: true
+      description: Source identifier in UUIDv4 format, as returned by `listGroupSources`. An unrecognised value results in a 200 response carrying a regular error object, not a 404.
+      schema:
+        type: string
+        examples:
+        - 213a3ed0-1fb9-4da2-bcf4-066da0f7b27e
+  requestBodies:
+    NoParameters:
+      required: false
+      description: 'This command takes no parameters. The body may be empty or an empty JSON object (`{}`), but the `Content-Type: application/json` header is mandatory.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/EmptyObject'
+          examples:
+            empty:
+              value: {}
