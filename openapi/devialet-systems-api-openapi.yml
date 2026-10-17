@@ -156,16 +156,16 @@ paths:
           $ref: '#/components/responses/InternalError'
 components:
   responses:
+    NotFound:
+      description: Non-existing endpoint — for example a `/systems/...` or `/groups/...` request performed against a non-speaker accessory. The message body is empty.
+    UnsupportedMediaType:
+      description: Invalid or missing `Content-Type` header on a POST request. The only allowed value is `application/json`.
     InternalError:
       description: Unexpected internal error. The body, when present, follows the regular error format, but its content is not part of the officially supported API.
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorEnvelope'
-    BadRequest:
-      description: Malformed JSON request. The message body is empty.
-    NotFound:
-      description: Non-existing endpoint — for example a `/systems/...` or `/groups/...` request performed against a non-speaker accessory. The message body is empty.
     EmptyOrError:
       description: Success (an empty JSON object) or a regular error. Devialet returns regular errors with HTTP status 200 and an `error` object in the body.
       content:
@@ -183,19 +183,8 @@ components:
               value:
                 error:
                   code: UnreachableDevices
-    UnsupportedMediaType:
-      description: Invalid or missing `Content-Type` header on a POST request. The only allowed value is `application/json`.
-  parameters:
-    SystemId:
-      name: systemId
-      in: path
-      required: true
-      description: System identifier. The only value supported today is `current`, which refers to the system of the dispatcher.
-      schema:
-        type: string
-        default: current
-        examples:
-        - current
+    BadRequest:
+      description: Malformed JSON request. The message body is empty.
   schemas:
     EmptyObject:
       type: object
@@ -253,6 +242,17 @@ components:
             message:
               type: string
               description: Debug-only text. Not intended for display to end users or for programmatic processing.
+  parameters:
+    SystemId:
+      name: systemId
+      in: path
+      required: true
+      description: System identifier. The only value supported today is `current`, which refers to the system of the dispatcher.
+      schema:
+        type: string
+        default: current
+        examples:
+        - current
   requestBodies:
     NoParameters:
       required: false

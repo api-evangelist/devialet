@@ -95,7 +95,56 @@ paths:
         '500':
           $ref: '#/components/responses/InternalError'
 components:
+  parameters:
+    GroupId:
+      name: groupId
+      in: path
+      required: true
+      description: Group identifier. The only value supported today is `current`, which refers to the group of the dispatcher.
+      schema:
+        type: string
+        default: current
+        examples:
+        - current
+  responses:
+    NotFound:
+      description: Non-existing endpoint — for example a `/systems/...` or `/groups/...` request performed against a non-speaker accessory. The message body is empty.
+    InternalError:
+      description: Unexpected internal error. The body, when present, follows the regular error format, but its content is not part of the officially supported API.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
   schemas:
+    Source:
+      type: object
+      description: An audio source hosted by a device in the installation.
+      required:
+      - sourceId
+      - deviceId
+      - type
+      properties:
+        sourceId:
+          type: string
+          description: Unique source identifier in UUIDv4 format.
+        deviceId:
+          type: string
+          description: Unique identifier of the host device in UUIDv4 format. May be a speaker or an accessory such as Dialog or Arch. For stereo pairs, use this to distinguish left from right inputs.
+        type:
+          type: string
+          description: The source type. Physical sources are `phono`, `line`, `digital_left`, `digital_right` (Arch only), `optical` (Phantom I, Dialog), and `opticaljack` (Phantom II only). Non-physical sources are `spotifyconnect`, `airplay2`, `bluetooth`, `upnp`, and `raat`.
+          enum:
+          - phono
+          - line
+          - digital_left
+          - digital_right
+          - optical
+          - opticaljack
+          - spotifyconnect
+          - airplay2
+          - bluetooth
+          - upnp
+          - raat
     SourceList:
       type: object
       description: The sources currently available to a group.
@@ -106,6 +155,33 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Source'
+    ErrorEnvelope:
+      type: object
+      description: The regular error envelope. Returned with HTTP status 200 for application-level errors, and with 500 for unexpected internal errors.
+      required:
+      - error
+      properties:
+        error:
+          type: object
+          required:
+          - code
+          properties:
+            code:
+              type: string
+              description: A predefined error identifier. Unknown codes must be handled gracefully by the client and shown as a generic error message.
+              examples:
+              - Error
+              - UnreachableDevices
+              - Timeout
+              - NoCurrentSource
+              - InvalidValue
+            details:
+              type: object
+              description: Structured data whose shape depends on the error identifier, for building a localized user-facing message.
+              additionalProperties: true
+            message:
+              type: string
+              description: Debug-only text. Not intended for display to end users or for programmatic processing.
     CurrentSourceState:
       type: object
       description: The current playback state of a group and the capabilities of its current source.
@@ -141,62 +217,6 @@ components:
             - next
             - previous
             - seek
-    ErrorEnvelope:
-      type: object
-      description: The regular error envelope. Returned with HTTP status 200 for application-level errors, and with 500 for unexpected internal errors.
-      required:
-      - error
-      properties:
-        error:
-          type: object
-          required:
-          - code
-          properties:
-            code:
-              type: string
-              description: A predefined error identifier. Unknown codes must be handled gracefully by the client and shown as a generic error message.
-              examples:
-              - Error
-              - UnreachableDevices
-              - Timeout
-              - NoCurrentSource
-              - InvalidValue
-            details:
-              type: object
-              description: Structured data whose shape depends on the error identifier, for building a localized user-facing message.
-              additionalProperties: true
-            message:
-              type: string
-              description: Debug-only text. Not intended for display to end users or for programmatic processing.
-    Source:
-      type: object
-      description: An audio source hosted by a device in the installation.
-      required:
-      - sourceId
-      - deviceId
-      - type
-      properties:
-        sourceId:
-          type: string
-          description: Unique source identifier in UUIDv4 format.
-        deviceId:
-          type: string
-          description: Unique identifier of the host device in UUIDv4 format. May be a speaker or an accessory such as Dialog or Arch. For stereo pairs, use this to distinguish left from right inputs.
-        type:
-          type: string
-          description: The source type. Physical sources are `phono`, `line`, `digital_left`, `digital_right` (Arch only), `optical` (Phantom I, Dialog), and `opticaljack` (Phantom II only). Non-physical sources are `spotifyconnect`, `airplay2`, `bluetooth`, `upnp`, and `raat`.
-          enum:
-          - phono
-          - line
-          - digital_left
-          - digital_right
-          - optical
-          - opticaljack
-          - spotifyconnect
-          - airplay2
-          - bluetooth
-          - upnp
-          - raat
     TrackMetadata:
       type: object
       description: Metadata for the current track. Absent when the source provides none; retained while the source is paused. All strings are UTF-8.
@@ -214,23 +234,3 @@ components:
           type: string
           format: uri
           description: URL from which the client can download the cover art image. Absent when the data are not available as a URL.
-  responses:
-    InternalError:
-      description: Unexpected internal error. The body, when present, follows the regular error format, but its content is not part of the officially supported API.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorEnvelope'
-    NotFound:
-      description: Non-existing endpoint — for example a `/systems/...` or `/groups/...` request performed against a non-speaker accessory. The message body is empty.
-  parameters:
-    GroupId:
-      name: groupId
-      in: path
-      required: true
-      description: Group identifier. The only value supported today is `current`, which refers to the group of the dispatcher.
-      schema:
-        type: string
-        default: current
-        examples:
-        - current

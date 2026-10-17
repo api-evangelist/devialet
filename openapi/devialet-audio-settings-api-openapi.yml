@@ -174,16 +174,16 @@ paths:
           $ref: '#/components/responses/InternalError'
 components:
   responses:
+    NotFound:
+      description: Non-existing endpoint — for example a `/systems/...` or `/groups/...` request performed against a non-speaker accessory. The message body is empty.
+    UnsupportedMediaType:
+      description: Invalid or missing `Content-Type` header on a POST request. The only allowed value is `application/json`.
     InternalError:
       description: Unexpected internal error. The body, when present, follows the regular error format, but its content is not part of the officially supported API.
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorEnvelope'
-    BadRequest:
-      description: Malformed JSON request. The message body is empty.
-    NotFound:
-      description: Non-existing endpoint — for example a `/systems/...` or `/groups/...` request performed against a non-speaker accessory. The message body is empty.
     EmptyOrError:
       description: Success (an empty JSON object) or a regular error. Devialet returns regular errors with HTTP status 200 and an `error` object in the body.
       content:
@@ -201,21 +201,22 @@ components:
               value:
                 error:
                   code: UnreachableDevices
-    UnsupportedMediaType:
-      description: Invalid or missing `Content-Type` header on a POST request. The only allowed value is `application/json`.
+    BadRequest:
+      description: Malformed JSON request. The message body is empty.
   schemas:
-    EqualizationBand:
+    EmptyObject:
       type: object
-      description: Per-band equalization. Band labels vary by system; documented examples are `low` and `high`.
+      description: An empty JSON object.
+      additionalProperties: false
+    CustomEqualizationBand:
+      type: object
+      description: Per-band gain stored for the `custom` preset.
       required:
       - gain
       properties:
-        frequency:
-          type: integer
-          description: User-facing central frequency for the band, in hertz. May be rounded, and may be absent.
         gain:
           type: number
-          description: Positive or negative gain for the band, in steps. May be fractional.
+          description: Positive or negative gain in steps. Rounded by the device to the nearest multiple of `gainRange.stepPrecision`; out-of-bounds values report `InvalidValue`.
     Equalizer:
       type: object
       description: The equalizer configuration of a system.
@@ -258,10 +259,18 @@ components:
           description: The full list of equalizer presets available on this system.
           items:
             type: string
-    EmptyObject:
+    EqualizationBand:
       type: object
-      description: An empty JSON object.
-      additionalProperties: false
+      description: Per-band equalization. Band labels vary by system; documented examples are `low` and `high`.
+      required:
+      - gain
+      properties:
+        frequency:
+          type: integer
+          description: User-facing central frequency for the band, in hertz. May be rounded, and may be absent.
+        gain:
+          type: number
+          description: Positive or negative gain for the band, in steps. May be fractional.
     EqualizerUpdate:
       type: object
       description: Equalizer change request. `enabled`, `currentEqualization`, `gainRange`, and `availablePresets` are GET-only and are ignored if sent.
@@ -278,6 +287,18 @@ components:
           description: Optional. Stored gains for the `custom` preset, keyed by band label. Bands may be sent together (applied simultaneously) or one by one. Omitting this leaves the stored custom gains unchanged.
           additionalProperties:
             $ref: '#/components/schemas/CustomEqualizationBand'
+    NightMode:
+      type: object
+      description: The night-mode audio rendering selection.
+      required:
+      - nightMode
+      properties:
+        nightMode:
+          type: string
+          enum:
+          - 'on'
+          - 'off'
+          description: Night-mode selection.
     ErrorEnvelope:
       type: object
       description: The regular error envelope. Returned with HTTP status 200 for application-level errors, and with 500 for unexpected internal errors.
@@ -305,27 +326,6 @@ components:
             message:
               type: string
               description: Debug-only text. Not intended for display to end users or for programmatic processing.
-    NightMode:
-      type: object
-      description: The night-mode audio rendering selection.
-      required:
-      - nightMode
-      properties:
-        nightMode:
-          type: string
-          enum:
-          - 'on'
-          - 'off'
-          description: Night-mode selection.
-    CustomEqualizationBand:
-      type: object
-      description: Per-band gain stored for the `custom` preset.
-      required:
-      - gain
-      properties:
-        gain:
-          type: number
-          description: Positive or negative gain in steps. Rounded by the device to the nearest multiple of `gainRange.stepPrecision`; out-of-bounds values report `InvalidValue`.
   parameters:
     SystemId:
       name: systemId

@@ -133,52 +133,7 @@ paths:
         '500':
           $ref: '#/components/responses/InternalError'
 components:
-  responses:
-    InternalError:
-      description: Unexpected internal error. The body, when present, follows the regular error format, but its content is not part of the officially supported API.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorEnvelope'
-    BadRequest:
-      description: Malformed JSON request. The message body is empty.
-    NotFound:
-      description: Non-existing endpoint — for example a `/systems/...` or `/groups/...` request performed against a non-speaker accessory. The message body is empty.
-    EmptyOrError:
-      description: Success (an empty JSON object) or a regular error. Devialet returns regular errors with HTTP status 200 and an `error` object in the body.
-      content:
-        application/json:
-          schema:
-            oneOf:
-            - $ref: '#/components/schemas/EmptyObject'
-            - $ref: '#/components/schemas/ErrorEnvelope'
-          examples:
-            success:
-              summary: Successful command
-              value: {}
-            regularError:
-              summary: Regular error returned with HTTP 200
-              value:
-                error:
-                  code: UnreachableDevices
-    UnsupportedMediaType:
-      description: Invalid or missing `Content-Type` header on a POST request. The only allowed value is `application/json`.
-  parameters:
-    SystemId:
-      name: systemId
-      in: path
-      required: true
-      description: System identifier. The only value supported today is `current`, which refers to the system of the dispatcher.
-      schema:
-        type: string
-        default: current
-        examples:
-        - current
   schemas:
-    EmptyObject:
-      type: object
-      description: An empty JSON object.
-      additionalProperties: false
     Volume:
       type: object
       description: The volume of a system, in percent.
@@ -190,6 +145,10 @@ components:
           minimum: 0
           maximum: 100
           description: Current volume of the system, in percent.
+    EmptyObject:
+      type: object
+      description: An empty JSON object.
+      additionalProperties: false
     ErrorEnvelope:
       type: object
       description: The regular error envelope. Returned with HTTP status 200 for application-level errors, and with 500 for unexpected internal errors.
@@ -217,6 +176,47 @@ components:
             message:
               type: string
               description: Debug-only text. Not intended for display to end users or for programmatic processing.
+  responses:
+    NotFound:
+      description: Non-existing endpoint — for example a `/systems/...` or `/groups/...` request performed against a non-speaker accessory. The message body is empty.
+    UnsupportedMediaType:
+      description: Invalid or missing `Content-Type` header on a POST request. The only allowed value is `application/json`.
+    InternalError:
+      description: Unexpected internal error. The body, when present, follows the regular error format, but its content is not part of the officially supported API.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+    EmptyOrError:
+      description: Success (an empty JSON object) or a regular error. Devialet returns regular errors with HTTP status 200 and an `error` object in the body.
+      content:
+        application/json:
+          schema:
+            oneOf:
+            - $ref: '#/components/schemas/EmptyObject'
+            - $ref: '#/components/schemas/ErrorEnvelope'
+          examples:
+            success:
+              summary: Successful command
+              value: {}
+            regularError:
+              summary: Regular error returned with HTTP 200
+              value:
+                error:
+                  code: UnreachableDevices
+    BadRequest:
+      description: Malformed JSON request. The message body is empty.
+  parameters:
+    SystemId:
+      name: systemId
+      in: path
+      required: true
+      description: System identifier. The only value supported today is `current`, which refers to the system of the dispatcher.
+      schema:
+        type: string
+        default: current
+        examples:
+        - current
   requestBodies:
     NoParameters:
       required: false

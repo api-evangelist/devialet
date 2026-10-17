@@ -144,17 +144,28 @@ paths:
         '500':
           $ref: '#/components/responses/InternalError'
 components:
+  parameters:
+    DeviceId:
+      name: deviceId
+      in: path
+      required: true
+      description: Device identifier. The only value supported today is `current`, which refers to the dispatcher — the device that received the request.
+      schema:
+        type: string
+        default: current
+        examples:
+        - current
   responses:
+    NotFound:
+      description: Non-existing endpoint — for example a `/systems/...` or `/groups/...` request performed against a non-speaker accessory. The message body is empty.
+    UnsupportedMediaType:
+      description: Invalid or missing `Content-Type` header on a POST request. The only allowed value is `application/json`.
     InternalError:
       description: Unexpected internal error. The body, when present, follows the regular error format, but its content is not part of the officially supported API.
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorEnvelope'
-    BadRequest:
-      description: Malformed JSON request. The message body is empty.
-    NotFound:
-      description: Non-existing endpoint — for example a `/systems/...` or `/groups/...` request performed against a non-speaker accessory. The message body is empty.
     EmptyOrError:
       description: Success (an empty JSON object) or a regular error. Devialet returns regular errors with HTTP status 200 and an `error` object in the body.
       content:
@@ -172,51 +183,9 @@ components:
               value:
                 error:
                   code: UnreachableDevices
-    UnsupportedMediaType:
-      description: Invalid or missing `Content-Type` header on a POST request. The only allowed value is `application/json`.
-  parameters:
-    DeviceId:
-      name: deviceId
-      in: path
-      required: true
-      description: Device identifier. The only value supported today is `current`, which refers to the dispatcher — the device that received the request.
-      schema:
-        type: string
-        default: current
-        examples:
-        - current
+    BadRequest:
+      description: Malformed JSON request. The message body is empty.
   schemas:
-    EmptyObject:
-      type: object
-      description: An empty JSON object.
-      additionalProperties: false
-    ErrorEnvelope:
-      type: object
-      description: The regular error envelope. Returned with HTTP status 200 for application-level errors, and with 500 for unexpected internal errors.
-      required:
-      - error
-      properties:
-        error:
-          type: object
-          required:
-          - code
-          properties:
-            code:
-              type: string
-              description: A predefined error identifier. Unknown codes must be handled gracefully by the client and shown as a generic error message.
-              examples:
-              - Error
-              - UnreachableDevices
-              - Timeout
-              - NoCurrentSource
-              - InvalidValue
-            details:
-              type: object
-              description: Structured data whose shape depends on the error identifier, for building a localized user-facing message.
-              additionalProperties: true
-            message:
-              type: string
-              description: Debug-only text. Not intended for display to end users or for programmatic processing.
     Device:
       type: object
       description: A physically separate Devialet product connected to the local network.
@@ -261,6 +230,37 @@ components:
         deviceName:
           type: string
           description: Human-readable non-empty UTF-8 name, typically describing the physical location of the speaker system or the source device of an accessory.
+    EmptyObject:
+      type: object
+      description: An empty JSON object.
+      additionalProperties: false
+    ErrorEnvelope:
+      type: object
+      description: The regular error envelope. Returned with HTTP status 200 for application-level errors, and with 500 for unexpected internal errors.
+      required:
+      - error
+      properties:
+        error:
+          type: object
+          required:
+          - code
+          properties:
+            code:
+              type: string
+              description: A predefined error identifier. Unknown codes must be handled gracefully by the client and shown as a generic error message.
+              examples:
+              - Error
+              - UnreachableDevices
+              - Timeout
+              - NoCurrentSource
+              - InvalidValue
+            details:
+              type: object
+              description: Structured data whose shape depends on the error identifier, for building a localized user-facing message.
+              additionalProperties: true
+            message:
+              type: string
+              description: Debug-only text. Not intended for display to end users or for programmatic processing.
   requestBodies:
     NoParameters:
       required: false
