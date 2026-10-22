@@ -51,3 +51,41 @@
       P856 not contradicting (Kin 2026-10-20 decision 2)
   status: not-a-workflow
   arazzo: null
+- slug: devialet-home-assistant-community-store-hacs
+  label: Home Assistant Community Store (HACS)
+  partner_name: Home Assistant Community Store (HACS)
+  category: home-automation
+  type: marketplace
+  marketplace: HACS default repository
+  channel: partner-built
+  evidence: https://github.com/EvotecIT/homeassistant-devialet
+  source: edge
+  relationship: connector-coverage
+  contract_reference:
+    register: HACS default integration list (github.com/hacs/default, pinned commit) + HA analytics custom_integrations.json
+    standard: Home Assistant custom integration (HACS)
+    spec_file: null
+    role: hacs-community-integration
+    register_id: https://raw.githubusercontent.com/hacs/default/dee7a0eddd9644e8373be114cdb7818443014ba0/integration
+    pinned_commit: dee7a0eddd9644e8373be114cdb7818443014ba0
+    matched_by: register-name
+    match_note: register-name 'devialet' = devialet; wikidata P856 devialet.com agrees or unheld
+    integrations:
+    - domain: devialet
+      name: Devialet
+      repo: https://github.com/EvotecIT/homeassistant-devialet
+      builder: EvotecIT
+      installs: 9
+      installs_band: <10
+    max_installs: 9
+    installs_source: https://analytics.home-assistant.io/custom_integrations.json
+    signal_note: installs = HA's opt-in analytics count for the integration's domain on the read date (a floor,
+      opt-in only); per-integration context, never summed or counted as edges
+    detected_by: sweep-home-assistant-hacs-custom.py
+    detected: '2026-10-22'
+    registered_name: Devialet
+    identity_source: register-name
+    identity_note: register gave only the name; exact normalised match to the repo's apis.yml name, one repo, Wikidata
+      P856 not contradicting (Kin 2026-10-20 decision 2)
+  status: not-a-workflow
+  arazzo: null
