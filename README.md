@@ -64,5 +64,124 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Devialet is a company surfaced via the API Evangelist harvest backlog (source: secondary-market) and added to the network as a stub for full-pipeline profiling.
-- https://www.hiive.com/securities/devialet-stock
+Devialet is a French high-end audio company founded and headquartered in Paris, known for the Phantom active loudspeaker range, the Dione soundbar, the Mania portable speaker, the Gemini earbuds, and the Expert Pro amplifier line, and for patented acoustic technologies including ADH (Analog Digital Hybrid), SAM (Speaker Active Matching), and the EVO embedded platform. Its developer-facing surface is the Devialet IP Control API — an unauthenticated HTTP API served by the speakers themselves on the local network under the /ipcontrol/v1 path, introduced with DOS 2.14 firmware and documented by Devialet as a PDF reference for system integrators. It exposes device, system, and group state plus playback, volume, equalizer, night mode, Bluetooth pairing, and power and factory-reset commands, with mDNS/DNS-SD discovery. Devialet also ships certified home-automation drivers for Crestron and Control4 alongside the raw API.
+
+**Areas:** Audio · Consumer Electronics · Smart Speakers · Home Automation · Custom Installation · Device Control · Local Network API · IoT · Hardware · Music · France
+
+## Devialet on APIs.io
+
+Everything profiled for Devialet is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/devialet/](https://apis.io/providers/devialet/)** — or go straight to one of the APIs or properties below.
+
+### APIs (6)
+
+- [Devialet Audio Settings API](https://apis.io/apis/devialet/devialet-audio-settings-api/) — Equalizer and night-mode settings, hosted by the system leader.
+- [Devialet Devices API](https://apis.io/apis/devialet/devialet-devices-api/) — Individual physical Devialet products on the local network, including accessories.
+- [Devialet Groups API](https://apis.io/apis/devialet/devialet-groups-api/) — Sets of one or more systems playing the same content in the multi-room configuration.
+- [Devialet Playback API](https://apis.io/apis/devialet/devialet-playback-api/) — Play, pause, mute, unmute, next, and previous on the group's current source.
+- [Devialet Sound Control API](https://apis.io/apis/devialet/devialet-sound-control-api/) — Volume query and control at the system level.
+- [Devialet Systems API](https://apis.io/apis/devialet/devialet-systems-api/) — Sets of one or more speakers that always share playback state (solo or stereo).
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [devialet-ip-control](https://apis.io/servers/devialet/devialet-ip-control/)
+
+#### Agentic access (1)
+
+Which operations an agent can call, which act, and which need a human in the loop.
+
+- [Devialet Agentic Access](https://apis.io/agentic-access/devialet/devialet-agentic-access/)
+
+#### Collections (6)
+
+Postman and Open Collection request collections.
+
+- [Devialet IP Control Audio Settings API](https://apis.io/collections/devialet/open-devialet-audio-settings-api/)
+- [Devialet IP Control Devices API](https://apis.io/collections/devialet/open-devialet-devices-api/)
+- [Devialet IP Control Groups API](https://apis.io/collections/devialet/open-devialet-groups-api/)
+- [Devialet IP Control Playback API](https://apis.io/collections/devialet/open-devialet-playback-api/)
+- [Devialet IP Control Sound Control API](https://apis.io/collections/devialet/open-devialet-sound-control-api/)
+- [Devialet IP Control Systems API](https://apis.io/collections/devialet/open-devialet-systems-api/)
+
+#### Overlays (1)
+
+OpenAPI overlays, including conversational phrasing for each operation.
+
+- [Devialet Ip Control Overlay](https://apis.io/overlays/devialet/devialet-ip-control-overlay/)
+
+#### Security (2)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Devialet Authentication](https://apis.io/security/devialet/devialet-authentication/)
+- [Devialet Domain Security](https://apis.io/security/devialet/devialet-domain-security/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://www.devialet.com/)
+- [Documentation](https://help.devialet.com/hc/en-us/articles/4415207423378-Phantom-s-documentation-for-piloting-them-via-IP)
+- [Support](https://help.devialet.com/)
+- [Compliance](https://www.devialet.com/en-eu/legal/compliance/)
+- [Terms of service](https://www.devialet.com/en-eu/legal/general-terms-of-sale/)
+- [Privacy policy](https://www.devialet.com/en-eu/legal/privacy-policy/)
+- [GitHub](https://github.com/devialet)
+
+## API Evangelist rating
+
+**Kin Score 28.3** — thin · rubric 0.24.0 · scored 2026-10-17
+
+| Facet | Score |
+|---|---|
+| Discoverability | 73.2 |
+| Contract quality | 15.4 |
+| Contract governance | 4.5 |
+| Operational transparency | 18.4 |
+| Developer ergonomics | 35.1 |
+| Access clarity | 28.9 |
+
+**Agent readiness 26.8** — agent-aware
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | — |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | documented (partial credit) |
+| Error Semantics | documented (partial credit) |
+| OpenAPI Examples | partial |
+| Rate Limit Signal | — |
+| Event Surface Described | — |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+
+**Regulatory alignment 29.4** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/devialet/](https://apis.io/providers/devialet/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Devialet: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/devialet/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
